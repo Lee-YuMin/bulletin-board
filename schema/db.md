@@ -1,3 +1,4 @@
-DB Name : mysite
-user : lym
-password : password123!
+Port : 3306
+DB Name : MYSITE
+User : root
+Password : password123
