@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../style/shared-styles.html">
 <link rel="import" href="../../style/board-table.html">
+<link rel="import" href="../components/confirm-dialog.html">
 
 <dom-module id="write-board">
   <template>
@@ -80,7 +81,6 @@
         </tr>
       </table>
     </div>
-
   </template>
 
   <script>
@@ -91,23 +91,33 @@
 
       },
 
-      created: function () {
+      created: function() {
         console.log('write-board-created')
       },
-
+      
+      // 리셋 버튼 동작 시 input창들의 값들 전부 제거
       _reset: function() {
         let formList = this.shadowRoot.querySelectorAll('[id^=input-');
         formList.forEach(node => {
           node.value = '';
         })
       },
-
+      
+      // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
         window.history.back(-1)
       },
-
+      
+      // 저장 버튼 클릭시 동작
       _save: function() {
-        
+        let msg = {
+          title: '성공',
+          message: '게시글이 등록되었습니다.',
+          confirmCallback: () => {
+            console.log('callback')
+          }
+        }
+        document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
       }
     });
   </script>

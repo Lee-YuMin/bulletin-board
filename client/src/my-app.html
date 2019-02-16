@@ -1,16 +1,5 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="my-icons.html">
+
+<link rel="import" href="./my-app-import.html">
 
 <dom-module id="my-app">
   <template>
@@ -92,6 +81,9 @@
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+
+    
+    <confirm-dialog id="dialog"></confirm-dialog>
   </template>
 
   <script>
@@ -112,13 +104,15 @@
 
       observers: [
         '_routePageChanged(routeData.page)',
-        
       ],
 
       created: function () {
         this._createUrlMap();
+        // 다이얼로그 호출용 이벤트
+        document.addEventListener('open-dialog', this._openDialog.bind(this));
       },
 
+      // 라우팅이 바뀔때 때마다 들어오는 함수
       _routePageChanged: function(page) {
         this.page = page || 'main';
 
@@ -127,21 +121,28 @@
         }
 
         this.title = page.toUpperCase();
-        
-        console.log('_routePageChanged : ' + page)
       },
 
+      // 페이지가 바뀔 때마다 해당 경로의 파일을 로딩
       _pageChanged: function(page) {
         if(!page) 
           return;
 
-        console.log('_pageChanged : ' + resolvedPageUrl)
         var resolvedPageUrl = this.resolveUrl('views/' + this._pageParsing.get(page) + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
 
       _showPage404: function() {
         this.page = 'not-found-view';
+      },
+
+      /* 다이얼로그 파라미터 
+       * title: string,
+       * message: string,
+       * confirmCallback: callback function
+       */
+      _openDialog: function(msg) {
+        this.$.dialog.open(msg.detail);
       },
       
       // 페이지별 파일명을 Map으로 저장

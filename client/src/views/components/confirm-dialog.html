@@ -1,0 +1,146 @@
+<dom-module id="confirm-dialog">
+	<template>
+		<style>
+			#modal {
+				display: none;
+				position: fixed;
+				z-index: 4;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, .4);
+			}
+
+			#msg-box {
+				margin: auto;
+				background-color: #fff;
+				border-radius: var(--things-default-border-radius);
+				border: 3px solid var(--things-primary-color);
+				overflow: hidden;
+			}
+
+			#title {
+				background-color: #efefef;
+				overflow: hidden;
+				margin: 0 0 20px 0;
+				padding: 10px 20px 5px 20px;
+				min-width: 150px;
+				text-align: center;
+				color: #4e638a;
+				font-weight: bold;
+				font-size: 1.2rem
+			}
+
+			#message {
+				display: block;
+				padding: 10px 20px 20px 20px;
+				border-bottom: 1px solid #efefef;
+				font-size: 1rem;
+				color: #585858;
+			}
+
+			#button-container {
+				text-align: center;
+				padding: 10px 0 25px 10px;
+			}
+
+			button {
+				background: #7f95bd;
+				background: linear-gradient(to bottom, #7f95bd 0%, #4e638a 100%);
+				border: none;
+				border-top: .06rem solid #96b2e6;
+				border-bottom: .2rem solid #3a4b69;
+				border-radius: 12px;
+				margin: 0;
+				padding: .3rem 1rem;
+				min-width: 100px;
+				color: #fff;
+				text-shadow: 0px .03rem .03rem rgba(0, 0, 0, 0.4);
+				font-size: 1rem;
+				font-family: unset;
+			}
+
+			button:active {
+				background: #7f95bd;
+				background: linear-gradient(to bottom, #4e638a 0%, #7f95bd 100%);
+				text-shadow: .03rem 0rem .03rem rgba(0, 0, 0, 0.4);
+			}
+
+			button:focus {
+				outline: none
+			}
+		</style>
+		<div id="modal">
+			<div id="msg-box">
+				<div id="title">[[title]]</div>
+					<span id="message">[[message]]</span>
+				<div id="button-container">
+						<button id="confirm-btn" on-click="confirmBtnClicked">[[confirmText]]</button>
+				</div>
+			</div>
+		</div>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'confirm-dialog',
+
+			properties: {
+				title: {
+					type: String
+				},
+
+				message: {
+					type: String,
+					value: ''
+				},
+
+				confirmText: {
+					type: String,
+					value: '확인'
+				}
+			},
+
+			open: function (opt) {
+				this.title = opt.title;
+				this.message = opt.message;
+				this.showConfirmBtn = true;
+				this.confirmCallback = opt.confirmCallback;
+				this.$['modal'].style.display = 'grid';
+				this._enablePreventKey();
+			},
+
+			confirmBtnClicked: function () {
+				this.$['modal'].style.display = 'none';
+				if (this.confirmCallback) {
+					this.confirmCallback();
+				}
+				this.resetOpt();
+			},
+
+			/**
+			 * 옵션 값들을 제거
+			 */
+			resetOpt: function () {
+				this.title = '';
+				this.message = '';
+				this.cancelCallback = null;
+				this.confirmCallback = null;
+				this._disablePreventKey();
+			},
+
+			_enablePreventKey: function () {
+				document.addEventListener('keypress', this._keyPrevent, false);
+			},
+
+			_disablePreventKey: function () {
+				document.removeEventListener('keypress', this._keyPrevent, false);
+			},
+
+			_keyPrevent: function (event) {
+				event.preventDefault();
+			}
+		});
+	</script>
+</dom-module>
