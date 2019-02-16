@@ -1,0 +1,114 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../style/shared-styles.html">
+<link rel="import" href="../../style/board-table.html">
+
+<dom-module id="write-board">
+  <template>
+    <style include="shared-styles">
+
+      :host {
+        display: block;
+        padding: 10px;
+      }
+
+      td {
+        background: #fff;
+      }
+
+      .footer-menu > button {
+        padding: 5px 10px 5px 10px;
+        margin: 0px 2px;
+      }
+      
+      .col-second {
+        text-align: left;
+      }
+      td input,textarea {
+        width: 100%;
+        max-width: 400px;
+      }
+
+    </style>
+
+    <div class="container">
+      <table>
+        <colgroup>
+          <col style='width:20%'>
+          <col style='width:80%'>
+        </colgroup>
+        <tr>
+          <th colspan="2">게시글 쓰기</th>
+        </tr>
+        <tr>
+          <td >이름</td>
+          <td class="col-second">
+            <input type='text' id="input-name">
+          </td>
+        </tr>
+        <tr>
+          <td>이메일</td>
+          <td class="col-second">
+            <input type='text' id="input-email">
+          </td>
+        </tr>
+        <tr>
+          <td>비밀번호</td>
+          <td class="col-second">
+            <input type='password' id="input-password">
+          </td>
+        </tr>
+        <tr>
+          <td>제 목</td>
+          <td class="col-second">
+            <input type='text' id="input-title">
+          </td>
+        </tr>
+        <tr>
+          <td>내용</td>
+          <td class="col-second">
+            <textarea id="input-contents" cols=65 rows=15></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td colspan=2 class="footer-menu">
+            <button on-click="_save">저장하기</button>
+
+            <button on-click="_reset">다시쓰기</button>
+          
+            <button on-click="_back">뒤로가기</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'write-board',
+
+      properties: {
+
+      },
+
+      created: function () {
+        console.log('write-board-created')
+      },
+
+      _reset: function() {
+        let formList = this.shadowRoot.querySelectorAll('[id^=input-');
+        formList.forEach(node => {
+          node.value = '';
+        })
+      },
+
+      _back: function() {
+        window.history.back(-1)
+      },
+
+      _save: function() {
+        
+      }
+    });
+  </script>
+</dom-module>

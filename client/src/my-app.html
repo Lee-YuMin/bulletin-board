@@ -87,6 +87,7 @@
             role="main">
           <view-main name="main"></view-main>
           <view-board name="board"></view-board>
+          <write-board name="write_board"></write-board>
           <not-found-view name="not-found-view"></not-found-view>
         </iron-pages>
       </app-header-layout>
@@ -111,6 +112,7 @@
 
       observers: [
         '_routePageChanged(routeData.page)',
+        
       ],
 
       created: function () {
@@ -118,16 +120,22 @@
       },
 
       _routePageChanged: function(page) {
-        this.page = page || 'view-main';
+        this.page = page || 'main';
 
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
 
         this.title = page.toUpperCase();
+        
+        console.log('_routePageChanged : ' + page)
       },
 
       _pageChanged: function(page) {
+        if(!page) 
+          return;
+
+        console.log('_pageChanged : ' + resolvedPageUrl)
         var resolvedPageUrl = this.resolveUrl('views/' + this._pageParsing.get(page) + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
@@ -140,7 +148,8 @@
       _createUrlMap: function(page) {
         this._pageParsing = new Map([ 
           ['main', 'view-main'],
-          ['board', 'view-board']
+          ['board', 'board/view-board'],
+          ['write_board', 'board/write-board']
         ]);
       }
     });

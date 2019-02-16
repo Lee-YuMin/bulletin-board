@@ -1,6 +1,6 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="../style/board-table.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../style/shared-styles.html">
+<link rel="import" href="../../style/board-table.html">
 
 <dom-module id="view-board">
   <template>
@@ -37,11 +37,11 @@
 
         <table>
           <colgroup>
-            <col width="5%">
-            <col width="50%">
-            <col width="20%">
-            <col width="15%">
-            <col width="15%">
+            <col style="width:5%"/>
+            <col style="width:50%"/>
+            <col style="width:20%"/>
+            <col style="width:15%"/>
+            <col style="width:15%"/>
           </colgroup>
           <tr>
             <th>번호</th>
@@ -81,9 +81,13 @@
             검색
           </button>
 
-          <button class="btn-add">새 글 쓰기</button>
+          <a name="write-board" href="/write_board">
+            <button class="btn-add" >새 글 쓰기</button>
+          </a>
+          
         </div>
     </div>
+
   </template>
 
   <script>
@@ -94,12 +98,19 @@
         boardTitle: {
           type: String,
           value: '게시판'
+        },
+
+        page:{
+          notify: true,
+          type: String
         }
       },
 
       created: function() {
-        console.log(123)
-      }
+        console.log('view-borad-created')
+      },
+  
+      
     });
   </script>
 </dom-module>

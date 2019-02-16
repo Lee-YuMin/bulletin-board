@@ -3,7 +3,8 @@
   "shell": "src/my-app.html",
   "fragments": [
     "src/views/view-main.html",
-    "src/views/view-board.html",
+    "src/views/board/view-board.html",
+    "src/views/board/write-board.html",
     "src/views/not-found-view.html"
   ],
   "sourceGlobs": [
