@@ -30,6 +30,14 @@
       }
 
     </style>
+    <iron-ajax
+      id="ajax-insert-board"
+      url="[[insertBoardUrl]]"
+      params='[[insertBoardPrams]]'
+      handle-as="json"
+      on-response="insertBoardResponse"
+      debounce-duration="300">
+    </iron-ajax>
 
     <div class="container">
       <table>
@@ -43,7 +51,7 @@
         <tr>
           <td >이름</td>
           <td class="col-second">
-            <input type="text" id="input-name">
+            <input type="text" id="input-id">
           </td>
         </tr>
         <tr>
@@ -105,19 +113,62 @@
       
       // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
-        window.history.back(-1)
+        window.history.back(-1);
       },
       
       // 저장 버튼 클릭시 동작
       _save: function() {
+        let id = this.$['input-id'].value,
+            password = this.$['input-password'].value,
+            email = this.$['input-email'].value,
+            title = this.$['input-title'].value,
+            contents = this.$['input-contents'].value;
+
+        let ip = this._getIp().then((data)=>{
+              return data.ip;
+            }).catch((err) => {
+              return null;
+            })
+
+        this.insertBoardUrl = '/board/insert-board.php';
+        this.insertBoardPrams = {
+          id,
+          password,
+          email,
+          title,
+          contents,
+          ip
+        }
+
+        this.$['ajax-insert-board'].generateRequest();
+
         let msg = {
           title: '성공',
           message: '게시글이 등록되었습니다.',
           confirmCallback: () => {
-            console.log('callback')
+            this._reset();
           }
         }
         document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
+      },
+
+      insertBoardResponse: function(response) {
+        console.log(response)
+      },
+      
+      // 사용자의 IP를 가져오는 로직
+      _getIp: function() {
+        return new Promise((resolve, resject) => {
+          var head = document.getElementsByTagName('head')[0];
+          var script= document.createElement('script');
+          window.getIP = function(json) {
+              head.removeChild(script);
+              resolve(json);
+          };
+          script.type= 'text/javascript';
+          script.src= 'https://api.ipify.org?format=jsonp&callback=getIP';
+          head.appendChild(script);
+        })
       }
     });
   </script>

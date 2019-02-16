@@ -1,5 +1,5 @@
 {
-  "extends": ["eslint:recommended", "google"],
+  "extends": ["google"],
   "env": {
     "browser": true,
     "es6": true,
@@ -10,7 +10,8 @@
   ],
   "rules": {
     "no-var": "off",
-    "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }]
+    "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }],
+    "linebreak-style": ["error", "windows"]
   },
   "globals": {
     "Polymer": true
