@@ -90,8 +90,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="not-found-view"
             role="main">
-          <view-main name="view-main"></view-main>
-          <view-board name="view-board"></view-board>
+          <view-main name="main"></view-main>
+          <view-board name="board"></view-board>
           <not-found-view name="not-found-view"></not-found-view>
         </iron-pages>
       </app-header-layout>
@@ -123,7 +123,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _routePageChanged: function(page) {
-        this.page = page || 'bagic-view';
+        this.page = page || 'view-main';
 
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
