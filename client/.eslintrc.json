@@ -1,0 +1,21 @@
+{
+  "extends": ["eslint:recommended", "google"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "plugins": [
+    "html"
+  ],
+  "rules": {
+    "no-var": "off",
+    "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }]
+  },
+  "globals": {
+    "Polymer": true
+  },
+  "parserOptions": {
+      "ecmaVersion": 2017
+  }
+}

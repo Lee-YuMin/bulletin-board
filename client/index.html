@@ -1,59 +1,108 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Bitnami: Open Source. Simplified</title>
-<link href="bitnami.css" media="all" rel="Stylesheet" type="text/css" />
-</head>
-<body>
-<div id="container">
-  <div id="header"> 
-    <div id="bitnami">
-        <a href="/"><img alt="Bitnami" src="img/bitnami.png?1186088387" /></a>
-    </div>
-  </div>
-    <div id="menu_launch_page">
-      <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td><img src="img/tab1_welcome.png" alt="" /></td>
-          <td><a href="applications.html"><img src="img/tab2_welcome.png" alt="" /></a></td>
-        </tr>
-      </table>
-    </div>
-  <div id="lowerContainer">
-    <div id="content">
-        <div align="center">
-<table class="tableParagraph">
-<tr>
-<td class="container">
-<img align="left" src="img/wampstack.png" alt="Bitnami WAMP Stack"/>
-<p>We created the Bitnami Project to help spread the adoption of freely
-available, high quality Open Source web applications. Bitnami aims to make
-it easier than ever to discover, download and install Open Source software such 
-as document and content management systems, wikis and blogging software.<br/><br/>
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
 
-You can learn more about Bitnami at <a href="https://bitnami.com">https://bitnami.com</a><br/><br/>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Lee YuMin">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-The Bitnami WAMP Stack is an easy to install
-software platform that greatly simplifies the deployment of Open Source web
-stacks. It includes ready-to-run versions of
-Apache, MySQL and PHP. Bitnami WAMP Stack is
-distributed for free under the Apache 2.0 license.<br/><br/> 
-To get started with Bitnami WAMP Stack we suggest the following:<br/><br/>
+    <title>Bulletin Board</title>
+    <meta name="description" content="Creating Bulletin Board">
+
+    <link rel="icon" href="./images/favicon.ico">
+
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="./manifest.json">
+
+    <meta name="theme-color" content="#3f51b5">
+
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Bulletin Board">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My App">
+
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" href="./images/manifest/icon-48x48.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./images/manifest/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="./images/manifest/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./images/manifest/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="./images/manifest/icon-192x192.png">
+
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="./images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#3f51b5">
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <script>
+      window.Polymer = {
+        dom: 'shadow',
+        lazyRegister: true,
+      };
 
 
-<b>1.- <a target="_blank" href="https://docs.bitnami.com/installer/infrastructure/wamp/">Check our documentation</a></b>. The stack is self-contained and independent on your system, you can find all components in your installation directory: C:/Bitnami/wampstack-7.1.26-0<br/><br/>
-<b>2.- <a target="_blank" href="https://docs.bitnami.com/installer/infrastructure/wamp/administration/control-services-linux/">Start the servers.</a></b> Open the graphical "Manager" tool in your installation directory to start &amp; stop the installed servers. You can also use "ctlscript.sh" from the command line prompt. <br/><br/>
-<b>3.- <a target="_blank" href="https://docs.bitnami.com/installer/infrastructure/wamp/get-started/add-applications-amp/">Add more apps.</a></b> Download and install any Bitnami application module to run on top of this Stack.<br/><br/>
-<b>4.- <a target="_blank" href="https://docs.bitnami.com/installer/infrastructure/wamp/administration/create-custom-application-php/">Deploy your own project</a></b>.
-</p>
-</td>
-</tr>
-</table>
-        </div>
-        <br/><br/>
-   </div>
-  </div>
-</div>
-</body>
+      (function() {
+        'use strict';
+
+        var onload = function() {
+          if (!window.HTMLImports) {
+            document.dispatchEvent(
+              new CustomEvent('WebComponentsReady', {bubbles: true})
+            );
+          }
+        };
+
+        var webComponentsSupported = (
+          'registerElement' in document
+          && 'import' in document.createElement('link')
+          && 'content' in document.createElement('template')
+        );
+
+        if (!webComponentsSupported) {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          script.onload = onload;
+          document.head.appendChild(script);
+        } else {
+          onload();
+        }
+      })();
+
+      // Load pre-caching Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js');
+        });
+      }
+    </script>
+
+    <link rel="import" href="./src/my-app.html">
+    
+    <style is="custom-style">
+      body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        line-height: 1.5;
+        min-height: 100vh;
+        background-color: #eeeeee;
+      }
+    </style>
+
+  </head>
+  <body>
+    <my-app></my-app>
+  </body>
 </html>
