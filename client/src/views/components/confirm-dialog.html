@@ -76,7 +76,7 @@
 				<div id="title">[[title]]</div>
 					<span id="message">[[message]]</span>
 				<div id="button-container">
-						<button id="confirm-btn" on-click="confirmBtnClicked">[[confirmText]]</button>
+						<button id="confirm-btn" on-click="confirmBtnClicked">확인</button>
 				</div>
 			</div>
 		</div>
@@ -94,23 +94,18 @@
 				message: {
 					type: String,
 					value: ''
-				},
-
-				confirmText: {
-					type: String,
-					value: '확인'
 				}
 			},
 
 			open: function (opt) {
 				this.title = opt.title;
 				this.message = opt.message;
-				this.showConfirmBtn = true;
 				this.confirmCallback = opt.confirmCallback;
 				this.$['modal'].style.display = 'grid';
 				this._enablePreventKey();
 			},
-
+			
+			// 확인 버튼을 누를때, 다이얼로그를 끄면서 콜백이 있으면 콜백을 동작 시킴
 			confirmBtnClicked: function () {
 				this.$['modal'].style.display = 'none';
 				if (this.confirmCallback) {
@@ -119,17 +114,15 @@
 				this.resetOpt();
 			},
 
-			/**
-			 * 옵션 값들을 제거
-			 */
+			// 옵션 값들을 제거
 			resetOpt: function () {
 				this.title = '';
 				this.message = '';
-				this.cancelCallback = null;
 				this.confirmCallback = null;
 				this._disablePreventKey();
 			},
-
+			
+			// 다이얼로그가 떠있을 때에는 키 입력 이벤트를 방지함
 			_enablePreventKey: function () {
 				document.addEventListener('keypress', this._keyPrevent, false);
 			},
