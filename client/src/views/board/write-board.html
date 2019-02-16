@@ -35,7 +35,8 @@
       url="[[insertBoardUrl]]"
       params='[[insertBoardPrams]]'
       handle-as="json"
-      on-response="insertBoardResponse"
+      method="GET"
+      on-response="_insertBoardResponse"
       debounce-duration="300">
     </iron-ajax>
 
@@ -123,37 +124,75 @@
             email = this.$['input-email'].value,
             title = this.$['input-title'].value,
             contents = this.$['input-contents'].value;
-
-        let ip = this._getIp().then((data)=>{
-              return data.ip;
-            }).catch((err) => {
-              return null;
-            })
+        
+        if(!this._validation(id, password, title))
+          return;
 
         this.insertBoardUrl = '/board/insert-board.php';
-        this.insertBoardPrams = {
-          id,
-          password,
-          email,
-          title,
-          contents,
-          ip
+        
+        // 아이피를 받아온 후에 AJAX 요청
+        this._getIp().then((data)=>{
+            return data.ip;
+          }).catch((err) => {
+            return null;
+          }).then((data) => {
+            this.insertBoardPrams = { id, password, email, title, contents, ip: data }
+            this.$['ajax-insert-board'].generateRequest();
+          })
+      },
+      
+      // ID, PASSWORD, TITLE의 유효성 검사
+      _validation: function(id, password, title) {
+        var pattern = /^[0-9a-z]+$/;
+
+        if(id.match(pattern) && password.match(pattern) && title)
+          return true;
+        
+        let message = '';
+        
+        if(!id || !id.match(pattern)){
+          message = '아이디를 올바르게 입력해주세요.';
+        } else if(!password || !password.match(pattern)){
+          message = '비밀번호를 올바르게 입력해주세요.';
+        } else if(!title){
+          message = '제목을 입력해주세요.';
         }
 
-        this.$['ajax-insert-board'].generateRequest();
-
+        this._openFailDialog(message);
+      },
+      
+      // 게시글 등록 요청 응답
+      _insertBoardResponse: function(e) {
+        let status = e.detail.response && e.detail.response.status;
+        if(status && status.toUpperCase() === 'OK'){
+          this._openSuccessDialog();
+        } else {
+          let message = '게시글 등록을 실패하였습니다.';
+          this._openFailDialog(message);
+        }
+      },
+      
+      // 게시글 등록 성공시 다이얼로그
+      _openSuccessDialog: function() {
         let msg = {
           title: '성공',
           message: '게시글이 등록되었습니다.',
           confirmCallback: () => {
             this._reset();
+            window.location.href = '/board'
           }
         }
         document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
       },
-
-      insertBoardResponse: function(response) {
-        console.log(response)
+      
+      // 게시글 등록 실패시 다이얼로그
+      _openFailDialog: function(message) {
+        console.log(message)
+        let msg = {
+          title: '실패',
+          message
+        }
+        document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
       },
       
       // 사용자의 IP를 가져오는 로직
