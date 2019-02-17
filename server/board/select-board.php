@@ -3,18 +3,18 @@ require_once '../db/db_connetion.php';
 
 define('SELECT_LIMIT', 15);
 $type = $_GET['type'];
-$contents = $_GET['contents'];
+$content = $_GET['content'];
 $pageNum = $_GET['pageNum'];
 $typeCondition;
 
 // 검색 조건이 있을시 조건 계산
-if(isset($contents)){
-  if($type == 'title_contents')
-    $template = 'AND (title like "%$contents%" OR contents like "%$contents%") ';
+if(isset($content)){
+  if($type == 'title_content')
+    $template = 'AND (title like "%$content%" OR content like "%$content%") ';
   else
-    $template = 'AND $type like "%$contents%" ';
+    $template = 'AND $type like "%$content%" ';
   
-  $match = array('$type'=>$type, '$contents'=>$contents);
+  $match = array('$type'=>$type, '$content'=>$content);
   $typeCondition = strtr($template, $match);
 }
 
