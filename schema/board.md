@@ -1,6 +1,6 @@
 <board> 게시판
 
-seqeunce    INT(10)         UNSIGNED NOT NULL AUTO_INCREMENT
+sequence    INT(10)         UNSIGNED NOT NULL AUTO_INCREMENT
 id          VARCHAR(50)     NOT NULL
 email       VARCHAR(50)
 password    VARCHAR(50)     NOT NULL
@@ -13,12 +13,12 @@ re_depth    INT(10)         UNSIGNED NOT NULL DEFAULT '0'
 parent      INT(10)         UNSIGNED NOT NULL DEFAULT '0'
 created_at  date            NOT NULL
 updated_at  date            NOT NULL
-PRIMARY KEY (seqeunce)
+PRIMARY KEY (sequence)
 
 ENGINE=InnoDB / DEFAULT CHARSET=utf8
 
 <INDEX>
- - seqeunce
+ - sequence
  - id
  - title
  - content
