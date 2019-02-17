@@ -2,10 +2,8 @@
   "entrypoint": "index.html",
   "shell": "src/my-app.html",
   "fragments": [
-    "src/views/view-main.html",
-    "src/views/board/view-board.html",
-    "src/views/board/write-board.html",
-    "src/views/not-found-view.html"
+    "src/views/**/*",
+    "bower_components/**/*"
   ],
   "sourceGlobs": [
     "src/**/*",
@@ -16,6 +14,7 @@
     "manifest.json",
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"
   ],
+
   "lint": {
     "rules": ["polymer-1"]
   },

@@ -12,7 +12,7 @@ WEB Server : Nginx
 Request Value : paging_num, (+검색 조건)
 Response Value : sequence, id, title, view_count, re_group, re_depth, parent, created_at
 Output : 번호 / 제목 / 작성자 / 작성일 / 조회수
-기타 : 15개 단위로 페이징
+기타 : 10개 단위로 페이징
 
 <게시글 추가 요청>
 Request Value : id, email, password, title, content, ip_add, re_group, re_depth, parent, created_at, updated_at, [file_list]

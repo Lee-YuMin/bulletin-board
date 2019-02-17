@@ -31,6 +31,18 @@
       hr {
         max-width: 750px;
       }
+
+      .page-num-container a:hover {
+        color: #3498db;
+      }
+
+      .page-num-container {
+        text-align: center;
+      }
+
+      .select-highlight {
+        font-weight: bold;
+      }
     </style>
     <app-location route="{{route}}"></app-location>
     <app-route
@@ -79,6 +91,14 @@
           </template>
         </table>
         <hr>
+        
+        <div class="page-num-container">
+          <a on-click="_clickBackPaging">[이전]</a>
+          <template is="dom-repeat" items="[[pageCount]]">
+            <a on-click="_clickGetPaging" class="page-num">[[item]]</a>
+          </template>
+          <a on-click="_clickForthPaging">[다음]</a>
+        </div>
 
         <div class="board-footer">
           <select id="type-select" >
@@ -118,22 +138,48 @@
           observer: '_routeChanged'
         },
 
-        pageNum: {
-          type: String,
-          value: 1
-        },
-
         boardList: {
           type: Array
-        }
+        },
+        
+        // Dom Repeat으로 페이지 버튼 생성을 위한 배열
+        pageCount: {
+          type: Array,
+          value: new Array(1)
+        },
+        // 총 페이지 수
+        totalPageCount: {
+          type: Number,
+          value: 1
+        },
+        // 총 개시글의 수
+        boardCount: {
+          type: Number,
+          value: 1,
+          observer: '_boardCountChanged'
+        },
+        // 현재 보여지고 있는 페이지
+        curPage: {
+          type: Number,
+          value: 1,
+          observer: '_curPageChanged'
+        },
+        // 한 페이지에 나오는 게시글 개수
+        paging: {
+          type: Number,
+          value: 10
+        },
+        // 페이징 개수가 10개가 넘어가면 1~10, 11~20로 10개씩 번호를 묶음
+        numCount: {
+          type: Number,
+          value: 10
+        }  
       },
       
       created: function() {
-        console.log('view-borad-created')
       },
 
       attached: function() {
-        console.log('view-borad-attached')
       },
       
       _routeChanged: function(route) {
@@ -142,10 +188,10 @@
         }
       },
 
-      _getBoardList: function() {
+      _getBoardList: function(curPage) {
         let type = this.$['type-select'].value;
         let content = this.$['type-input'].value;
-        let pageNum = this.pageNum;
+        let pageNum = curPage || this.curPage;
 
         this.selectBoardListPrams = {
           pageNum,
@@ -157,13 +203,87 @@
         this.$['ajax-select-board-list'].generateRequest();
       },
 
-      _selectBoardListResponse: function(e) {
-        console.log(e)
-        this.boardList = e.detail.response;
+      _selectBoardListResponse: function(e) { 
+        this.boardList = e.detail.response.list;
+        this.boardCount = e.detail.response.count;
+        this._setHighlightClickedText(this.curPage);
       },
 
       _typeSubmit: function(e) {
+        this.curPage = 1;
         this._getBoardList();
+      },
+      
+      // board의 개수가 바뀌면 페이지 숫자를 계산
+      _boardCountChanged: function(boardCount) {
+        let paging = this.paging;
+
+        // boardCount의 나머지가 0이 아닐 경우 : 총 개수 / 한 페이지에 보여질 숫자 + 1
+        this.totalPageCount = boardCount % paging == 0 ? Math.floor(boardCount / paging) : Math.floor(boardCount / paging + 1);
+
+        this._calculatePage();
+      },
+      
+      // 시작 페이지와 끝 페이지의 인덱스를 계산 ex) 1~10, 31~40
+      _calculatePage: function() {
+        let numCount = this.numCount;
+        let totalPageCount = this.totalPageCount;
+        let startPage = Math.max(this._deleteOneDigit(this.curPage) + 1, 1);  // 1의 자리를 제거하여 시작 페이지 수 계산
+        let endPage = Math.min(startPage + numCount - 1, totalPageCount); // 시작 페이지 수에서 페이지 표현 개수만큼 보이기
+        
+        let arr = [];
+        for(let i=startPage; i<=endPage; i++) {
+          arr.push(i);
+        }
+        this.pageCount = arr;
+      },
+      
+      // 페이지의 이전 버튼 동작
+      _clickBackPaging: function() {
+        this.curPage = Math.max(this._deleteOneDigit(this.curPage), 1);
+        this._calculatePage();
+      },
+      
+      // 페이지의 다음 버튼 동작
+      _clickForthPaging: function() {
+        this.curPage = Math.min(this._deleteOneDigit(this.curPage) + 11, this.totalPageCount);
+        this._calculatePage();
+      },
+
+      // 현재 페이지가 변경되면 해당 페이지에 대한 보드 리스트를 다시 요청
+      _curPageChanged: function(curPage) {
+        this._getBoardList(curPage);
+        this._clearTextHighlight();
+      },
+      
+      // 클릭된 페이지를 현재 페이지에 삽입
+      _clickGetPaging: function(e) {
+        this.curPage = e.target.innerText;
+      },
+
+      // 잔상 효과로 인해 지우는 시점은 페이지가 변경 되었을 때, 
+      // 다시 하이라이트를 주는 시점은 응답을 받은 후로 적용
+      _setHighlightClickedText: function(clickedNum) {
+        let textList = this.shadowRoot.querySelectorAll('.page-num');
+        
+        for(let i=0; i<textList.length; i++) {
+          if(textList[i].innerText == clickedNum) {
+            textList[i].classList.add('select-highlight');
+          }
+        }
+      },
+
+      _clearTextHighlight: function (){
+        let textList = this.shadowRoot.querySelectorAll('.page-num');
+        
+        textList.forEach(node => {
+            node.classList.remove('select-highlight');
+        });
+      },
+      
+      // 1의 자리를 제거 함수
+      _deleteOneDigit: function(num) {
+        return Math.floor((num - 1) / 10) * 10;
       }
     });
   </script>
