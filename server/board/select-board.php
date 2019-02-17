@@ -6,6 +6,7 @@ $type = $_GET['type'];
 $content = $_GET['content'];
 $pageNum = $_GET['pageNum'];
 $typeCondition;
+$returnArr = [];
 
 // 검색 조건이 있을시 조건 계산
 if(isset($content)){
@@ -18,7 +19,20 @@ if(isset($content)){
   $typeCondition = strtr($template, $match);
 }
 
-// 몇 번째의 페이지 인지 지정
+// PAGING을 위한 카운트 개수
+$pageSql= 'SELECT count(*) as count ';
+$pageSql.= 'FROM board ';
+$pageSql.= 'WHERE 1=1 ';
+if(isset($typeCondition))
+  $pageSql.= $typeCondition;
+
+$stmt = $connect->prepare($pageSql);
+$stmt->execute();
+$countResult = $stmt->get_result();
+
+$returnArr = array('count'=>$countResult->fetch_assoc()['count']);
+
+// 몇 번째의 페이지 인지 계산
 $page = ($pageNum - 1) * SELECT_LIMIT;
 
 $sql = 'SELECT sequence, id, title, view_count, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at, re_group, re_depth, parent ';
@@ -47,5 +61,7 @@ while($data = $result->fetch_assoc()){
                    'parent'    =>$data['parent']);
 }
 
-echo(json_encode($arr));
+$returnArr['list'] = $arr;
+
+echo(json_encode($returnArr));
 ?>
