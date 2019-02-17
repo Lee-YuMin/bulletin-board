@@ -6,6 +6,7 @@ Server : PHP 7.2
 Client : Polymer 1.0
 (AJAX 호출)
 
+WEB Server : Nginx
 
 <게시판 조회>
 Request Value : paging_num, (+검색 조건)

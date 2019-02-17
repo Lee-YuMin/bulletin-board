@@ -5,6 +5,7 @@
 
 <dom-module id="write-board">
   <template>
+    <style include="board-table"></style>
     <style include="shared-styles">
 
       :host {
@@ -157,8 +158,9 @@
         } else if(!title){
           message = '제목을 입력해주세요.';
         }
-
         this._openFailDialog(message);
+
+        return false;
       },
       
       // 게시글 등록 요청 응답
