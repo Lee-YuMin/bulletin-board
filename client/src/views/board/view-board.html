@@ -108,7 +108,7 @@
             <option value="title_content">제목+내용</option>
           </select>
 
-          <input id="type-input">
+          <input id="type-input" on-keypress="_keypressTypeInput">
 
           <button id="type-submit" on-click="_typeSubmit">
             검색
@@ -145,7 +145,7 @@
         // Dom Repeat으로 페이지 버튼 생성을 위한 배열
         pageCount: {
           type: Array,
-          value: new Array(1)
+          value: [1]
         },
         // 총 페이지 수
         totalPageCount: {
@@ -204,6 +204,7 @@
       },
 
       _selectBoardListResponse: function(e) { 
+        // if(e.detail.response) 
         this.boardList = e.detail.response.list;
         this.boardCount = e.detail.response.count;
         this._setHighlightClickedText(this.curPage);
@@ -284,6 +285,13 @@
       // 1의 자리를 제거 함수
       _deleteOneDigit: function(num) {
         return Math.floor((num - 1) / 10) * 10;
+      },
+      
+      // 검색 창에서 엔터를 누를 시, 조회 버튼 동작
+      _keypressTypeInput: function(e) {
+        console.log(e)
+        if(e.keyCode == 13)
+          this._typeSubmit();
       }
     });
   </script>

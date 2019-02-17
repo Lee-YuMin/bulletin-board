@@ -50,6 +50,7 @@ $stmt->bind_param('ii', $page, $SELECT_LIMIT);
 $stmt->execute();
 $result = $stmt->get_result();
 
+$arr = [];
 while($data = $result->fetch_assoc()){
     $arr[] = array('sequence'  =>$data['sequence'],
                    'id'        =>$data['id'],
