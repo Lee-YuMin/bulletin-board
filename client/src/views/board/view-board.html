@@ -54,7 +54,7 @@
     <iron-ajax
       auto
       id="ajax-select-board-list"
-      url="[[selectBoardListUrl]]"
+      url="/board/read.php"
       params='[[selectBoardListPrams]]'
       handle-as="json"
       method="GET"
@@ -199,7 +199,6 @@
           content
         };
         
-        this.selectBoardListUrl = '/board/select-board.php';
         this.$['ajax-select-board-list'].generateRequest();
       },
 
