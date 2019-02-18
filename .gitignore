@@ -3,3 +3,4 @@ client/node_modules
 client/.package-lock
 nginx/
 php/
+client/build

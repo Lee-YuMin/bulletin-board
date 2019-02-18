@@ -1,5 +1,5 @@
 CREATE TABLE board (
-seqeunce    INT(10)         UNSIGNED NOT NULL AUTO_INCREMENT,
+sequence    INT(10)         UNSIGNED NOT NULL AUTO_INCREMENT,
 id          VARCHAR(50)     NOT NULL,
 email       VARCHAR(50),
 password    VARCHAR(50)     NOT NULL,
