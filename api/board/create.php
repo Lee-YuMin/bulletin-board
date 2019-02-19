@@ -14,24 +14,23 @@ $db = $database->getConnection();
 $board = new BulletinBoard($db);
 
 // POST 데이터 받기
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents('php://input'));
 
-
-echo var_dump($data);
 // NOT NULL 데이터 체크
 if(
     !empty($data->id) &&
-    !empty($data->pasword) &&
+    !empty($data->password) &&
     !empty($data->title)
 ) {
-    $board->id = $data->id;
+    // 유효성 검사 통과시 넘어온 데이터로 board 객체 생성
+    $board->id       = $data->id;
     $board->password = $data->password;
-    $board->email = $data->email;
-    $board->title = $data->title;
-    $board->contents = $data->contents;
-    $board->ip = $data->ip;
+    $board->email    = $data->email;
+    $board->title    = $data->title;
+    $board->content =  $data->content;
+    $board->ip_add   = $data->ip_add;
 
-    if($board.create()){
+    if($board->create()){
         // INSERT 성공
         echo json_encode(array('status' => 'ok')); 
         http_response_code(201);
