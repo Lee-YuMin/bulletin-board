@@ -190,13 +190,13 @@
 
       _getBoardList: function(curPage) {
         let type = this.$['type-select'].value;
-        let content = this.$['type-input'].value;
+        let typeContent = this.$['type-input'].value;
         let pageNum = curPage || this.curPage;
 
         this.selectBoardListPrams = {
           pageNum,
           type,
-          content
+          typeContent
         };
         
         this.$['ajax-select-board-list'].generateRequest();
@@ -288,7 +288,6 @@
       
       // 검색 창에서 엔터를 누를 시, 조회 버튼 동작
       _keypressTypeInput: function(e) {
-        console.log(e)
         if(e.keyCode == 13)
           this._typeSubmit();
       }

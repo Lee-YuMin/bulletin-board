@@ -13,6 +13,10 @@ $db = $database->getConnection();
 
 $board = new BulletinBoard($db);
 
+$board->type = $_GET['type'];
+$board->typeContent = $_GET['typeContent'];
+$board->pageNum = $_GET['pageNum'];
+
 $stmt = $board->read();
 $num = $stmt->rowCount();
 
