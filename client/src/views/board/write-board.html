@@ -33,7 +33,7 @@
     </style>
     <iron-ajax
       id="ajax-insert-board"
-      url="[[insertBoardUrl]]"
+      url="/board/create.php"
       params='[[insertBoardPrams]]'
       handle-as="json"
       method="POST"
@@ -128,8 +128,6 @@
         
         if(!this._validation(id, password, title))
           return;
-
-        this.insertBoardUrl = '/board/insert-board.php';
         
         // 아이피를 받아온 후에 AJAX 요청
         this._getIp().then((data)=>{
@@ -144,7 +142,7 @@
       
       // ID, PASSWORD, TITLE의 유효성 검사
       _validation: function(id, password, title) {
-        var pattern = /^[0-9a-z]+$/;
+        var pattern = /^[0-9a-zA-Zㄱ-ㅎ가-힣]+$/;
 
         if(id.match(pattern) && password.match(pattern) && title)
           return true;

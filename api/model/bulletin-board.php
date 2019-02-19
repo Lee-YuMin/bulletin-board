@@ -74,6 +74,36 @@ class BulletinBoard {
     }
 
     function create() {
+        // "부모의 시퀀스 = 그룹 아이디" 를 위한 [최대 시퀀스+1] 계산
+        $re_group = '(SELECT * FROM (SELECT MAX(seqeunce)+1 as seqeunce FROM board) tmp)';
+
+        // 데이터 삽입
+        $sql = 'INSERT INTO '.$this->$table_name;
+        $sql.= '    (id, email, password, title, content, ip_add, view_count, ';
+        $sql.= '      re_group, re_depth, parent, created_at, updated_at)';
+        $sql.= 'VALUES';
+        $sql.= '    (:id, :email, :password, :title, :content, :ip_add, 0, ';
+        $sql.= '      :re_group, 0, 0, sysdate(), sysdate());';
         
+        $stmt = $this->$conn->prepare($sql);
+        
+        $this->id = htmlspecialchars(strip_tags($this->id));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->password = htmlspecialchars(strip_tags($this->password));
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->content = htmlspecialchars(strip_tags($this->content));
+
+        $stmt->bindValue(':id',       $_GET['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':email',    $_GET['email'], PDO::PARAM_INT);
+        $stmt->bindValue(':password', $_GET['password'], PDO::PARAM_INT);
+        $stmt->bindValue(':title',    $_GET['title'], PDO::PARAM_INT);
+        $stmt->bindValue(':content',  $_GET['content'], PDO::PARAM_INT);
+        $stmt->bindValue(':ip_add',   $_GET['ip_add'], PDO::PARAM_INT);
+        $stmt->bindValue(':re_group', $_GET['re_group'], PDO::PARAM_INT);
+
+        if($stmt.execute())
+           return true;
+        else
+            return false; 
     }
 }
