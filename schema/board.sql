@@ -12,5 +12,5 @@ re_depth    INT(10)         UNSIGNED NOT NULL DEFAULT '0',
 parent      INT(10)         UNSIGNED NOT NULL DEFAULT '0',
 created_at  datetime        NOT NULL,
 updated_at  datetime        NOT NULL,
-PRIMARY KEY (seqeunce)
+PRIMARY KEY (sequence)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
