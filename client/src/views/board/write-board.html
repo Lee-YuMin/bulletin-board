@@ -34,7 +34,7 @@
     <iron-ajax
       id="ajax-insert-board"
       url="/board/create.php"
-      body='[[insertBoardPrams]]'
+      body="[[insertBoardPrams]]"
       handle-as="json"
       method="POST"
       on-response="_insertBoardResponse"
@@ -117,7 +117,7 @@
       // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
         this._reset();
-        window.history.back(-1);
+        this.set('routeData.page', 'board');
       },
       
       // 저장 버튼 클릭시 동작
@@ -181,7 +181,7 @@
           message: '게시글이 등록되었습니다.',
           confirmCallback: () => {
             this._reset();
-            window.location.replace('/board');
+            this.set('routeData.page', 'board');
           }
         }
         document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));

@@ -32,8 +32,13 @@
         max-width: 750px;
       }
 
-      .page-num-container a:hover {
+      label:hover {
         color: #3498db;
+        animation: spinAround 2s linear infinite;
+      }
+
+      a {
+        text-decoration: blink;
       }
 
       .page-num-container {
@@ -44,12 +49,6 @@
         font-weight: bold;
       }
     </style>
-    <app-location route="{{route}}"></app-location>
-    <app-route
-      route="{{route}}"
-      pattern="/board/:pageNum"
-      data="{{routeData}}">
-    </app-route>
 
     <iron-ajax
       auto
@@ -83,7 +82,7 @@
           <template is="dom-repeat" items="[[boardList]]">
             <tr>
               <td>[[item.sequence]]</td>
-              <a href=""><td>[[item.title]]</td></a>
+              <td><a href='/detail_board/[[item.sequence]]'>[[item.title]]</a></td>
               <td>[[item.id]]</td>
               <td>[[item.created_at]]</td>
               <td>[[item.view_count]]</td>
@@ -93,11 +92,11 @@
         <hr>
         
         <div class="page-num-container">
-          <a on-click="_clickBackPaging">[이전]</a>
+          <label on-click="_clickBackPaging">[이전]</label>
           <template is="dom-repeat" items="[[pageCount]]">
-            <a on-click="_clickGetPaging" class="page-num">[[item]]</a>
+            <label on-click="_clickGetPaging" class="page-num">[[item]]</label>
           </template>
-          <a on-click="_clickForthPaging">[다음]</a>
+          <label on-click="_clickForthPaging">[다음]</label>
         </div>
 
         <div class="board-footer">
@@ -113,11 +112,8 @@
           <button id="type-submit" on-click="_typeSubmit">
             검색
           </button>
-
-          <a name="write-board" href="/write_board">
-            <button class="btn-add">새 글 쓰기</button>
-          </a>
-          
+            
+          <button class="btn-add" on-click="goToWriteBoard">새 글 쓰기</button>
         </div>
     </div>
 
@@ -186,6 +182,10 @@
         if(route.path.split('/')[1] == 'board'){
           this._getBoardList();
         }
+      },
+      
+      goToWriteBoard: function(route) {
+        this.set('routeData.page', 'write_board');
       },
 
       _getBoardList: function(curPage) {
