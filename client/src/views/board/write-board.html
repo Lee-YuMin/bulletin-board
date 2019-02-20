@@ -29,8 +29,8 @@
         width: 100%;
         max-width: 400px;
       }
-
     </style>
+
     <iron-ajax
       id="ajax-insert-board"
       url="/board/create.php"
@@ -116,6 +116,7 @@
       
       // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
+        this._reset();
         window.history.back(-1);
       },
       
@@ -180,7 +181,7 @@
           message: '게시글이 등록되었습니다.',
           confirmCallback: () => {
             this._reset();
-            window.location.href = '/board'
+            window.location.replace('/board');
           }
         }
         document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
