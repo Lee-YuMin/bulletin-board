@@ -122,6 +122,7 @@
         this._createUrlMap();
         // 다이얼로그 호출용 이벤트
         document.addEventListener('open-dialog', this._openDialog.bind(this));
+        window.location.hash = '#/main'
       },
 
       // 라우팅이 바뀔때 때마다 들어오는 함수
