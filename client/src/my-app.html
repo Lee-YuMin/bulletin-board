@@ -42,20 +42,19 @@
 
     </style>
 
-    <app-location route="{{route}}"></app-location>
+    <app-location route="{{route}}" use-hash-as-path></app-location>
     <app-route
         route="{{route}}"
         pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+        data="{{routeData}}"></app-route>
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
       <app-drawer id="drawer">
         <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view-main" href="/main">메인 화면</a>
-          <a name="view-board" href="/board">게시판</a>
+          <a name="view-main" href="#/main">메인 화면</a>
+          <a name="view-board" href="#/board">게시판</a>
         </iron-selector>
       </app-drawer>
 
@@ -77,19 +76,17 @@
           <view-main name="main"></view-main>
 
           <view-board 
-              name="board" 
-              route-data="{{routeData}}">
+              name="board"
+              route-data="[[routeData]]">
           </view-board>
 
           <write-board 
-              name="write_board" 
-              route-data="{{routeData}}">
+              name="write_board" >
           </write-board>
 
           <view-board-detail 
               name="board_detail"
-              route="{{subroute}}"
-              route-data="{{routeData}}">
+              route-data="[[routeData]]">
           </view-board-detail>
 
           <not-found-view 
@@ -120,6 +117,7 @@
 
       observers: [
         '_routePageChanged(routeData.page)'
+
       ],
 
       created: function () {
@@ -130,7 +128,9 @@
 
       // 라우팅이 바뀔때 때마다 들어오는 함수
       _routePageChanged: function(page) {
-        console.log('route : ' + page)
+        if(!page)
+          return;
+          
         this.page = page.split('/')[0] || 'main';
 
         if (!this.$.drawer.persistent) {
@@ -142,7 +142,6 @@
 
       // 페이지가 바뀔 때마다 해당 경로의 파일을 로딩
       _pageChanged: function(page) {
-        console.log('page: ' + page)
         if(!page) 
           return;
 

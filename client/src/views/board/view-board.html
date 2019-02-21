@@ -129,11 +129,6 @@
           value: '게시판'
         },
 
-        route: {
-          type: String,
-          observer: '_routeChanged'
-        },
-
         boardList: {
           type: Array
         },
@@ -172,25 +167,13 @@
         }  
       },
       
-      created: function() {
-      },
-
-      attached: function() {
-      },
-      
-      _routeChanged: function(route) {
-        if(route.path.split('/')[1] == 'board'){
-          this._getBoardList();
-        }
-      },
-      
       _goToWriteBoard: function(e) {
-        this.set('routeData.page', 'write_board');
+        window.location.hash = '#/write_board/'
       },
 
       _goToBoardDetail: function(e) {
         let sequence = e.target.seq;
-        this.set('routeData.page', `board_detail/${sequence}`);
+        window.location.hash = `#/board_detail/${sequence}`
       },
 
       _getBoardList: function(curPage) {
@@ -207,8 +190,7 @@
         this.$['ajax-select-board-list'].generateRequest();
       },
 
-      _selectBoardListResponse: function(e) { 
-        // if(e.detail.response) 
+      _selectBoardListResponse: function(e) {
         this.boardList = e.detail.response.list;
         this.boardCount = e.detail.response.count;
         this._setHighlightClickedText(this.curPage);
