@@ -101,10 +101,6 @@
       properties: {
 
       },
-
-      created: function() {
-        console.log('write-board-created')
-      },
       
       // 리셋 버튼 동작 시 id가 'input-'으로 시작하는 input창들의 값들 전부 제거
       _reset: function() {
@@ -117,7 +113,7 @@
       // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
         this._reset();
-        this.set('routeData.page', 'board');
+        window.location.hash = '#/board/'
       },
       
       // 저장 버튼 클릭시 동작
@@ -181,7 +177,7 @@
           message: '게시글이 등록되었습니다.',
           confirmCallback: () => {
             this._reset();
-            this.set('routeData.page', 'board');
+            window.location.hash = '#/board/'
           }
         }
         document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));

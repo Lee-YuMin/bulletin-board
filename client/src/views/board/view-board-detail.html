@@ -30,7 +30,8 @@
         max-width: 400px;
       }
     </style>
-
+    
+    <app-location route="{{route}}" use-hash-as-path></app-location>
     <app-route
       route="{{route}}"
       pattern="/board_detail/:boardSeq"
@@ -108,28 +109,25 @@
         pageNum: {
           type: String
         },
-        selected: {
+        boardSeq: {
           type: Object,
           observer: '_boardSeqChanged'
         },
         routeData: {
-          type: Object,
-          observer: '_routeDataChanged'
+          type: Boolean,
+          observer: 'routeDataChanged'
         }
-
-      },
-
-      created: function() {
-        
       },
       
-      _routeDataChanged: function(page) {
+      routeDataChanged: function(page) {
+
+        console.log('here : ')
         console.log(page)
       },
-      
+
       // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
-        this.set('routeData.page', 'board');
+        window.location.hash = '#/board/'
       },
       
       // 저장 버튼 클릭시 동작
