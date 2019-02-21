@@ -17,39 +17,30 @@ $board->type = $_GET['type'];
 $board->typeContent = $_GET['typeContent'];
 $board->pageNum = $_GET['pageNum'];
 
-$stmt = $board->read();
-$num = $stmt->rowCount();
-
 // 리턴되는 값 : 1. 총 보드의 개수, 2. 페이징 숫자 만큼의 보드 리스트
 $board_arr=array();
 $board_arr['count'] = $board->count();
+$board_arr['list'] = [];
 
-if($num>0){
-    $board_arr['list']=array();
- 
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+$stmt = $board->read();
 
-        extract($row);
- 
-        $board_item=array(
-            'sequence'  => $sequence,
-            'id'        => $id,
-            'title'     => $title,
-            'view_count'=> $view_count,
-            'created_at'=> $created_at,
-            're_group'  => $re_group,
-            're_depth'  => $re_depth,
-            'parent'    => $parent
-        );
- 
-        array_push($board_arr['list'], $board_item);
-    }
-    
-    http_response_code(200);
-    echo json_encode($board_arr);
-} else {
-    $board_arr['list'] = [];
-    http_response_code(404);
-    echo json_encode($board_arr);
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+    extract($row);
+
+    $board_item = array(
+        'sequence'  => $sequence,
+        'id'        => $id,
+        'title'     => $title,
+        'view_count'=> $view_count,
+        'created_at'=> $created_at,
+        're_group'  => $re_group,
+        're_depth'  => $re_depth,
+        'parent'    => $parent
+    );
+
+    array_push($board_arr['list'], $board_item);
 }
+
+http_response_code(200);
+echo json_encode($board_arr);
 ?>

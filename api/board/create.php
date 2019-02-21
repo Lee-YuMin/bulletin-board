@@ -17,11 +17,8 @@ $board = new BulletinBoard($db);
 $data = json_decode(file_get_contents('php://input'));
 
 // NOT NULL 데이터 체크
-if(
-    !empty($data->id) &&
-    !empty($data->password) &&
-    !empty($data->title)
-) {
+if( !empty($data->id) && !empty($data->password) && !empty($data->title)) {
+    
     // 유효성 검사 통과시 넘어온 데이터로 board 객체 생성
     $board->id       = $data->id;
     $board->password = $data->password;
