@@ -29,7 +29,6 @@ class BulletinBoard {
     // 게시글의 리스트 조회
     function read() {
         $SELECT_LIMIT = 10;
-        $typeCondition;
 
         // 몇 번째의 페이지 인지 계산 : (페이지 번호 - 1) * 한 페이지의 총 개수
         $page = ($this->pageNum - 1) * $SELECT_LIMIT;
@@ -94,24 +93,21 @@ class BulletinBoard {
         $stmt->bindValue(':ipAdd',    $this->ip_add, PDO::PARAM_STR);
         $stmt->bindValue(':reGroup',  $re_group, PDO::PARAM_INT);
 
-        if($stmt->execute())
-           return true;
-        else
-            return false; 
+        return $stmt->execute() ? true : false;
     }
 
     // 검색 조건이 있을시 조건 쿼리 String을, 없으면 ''을 리턴
     private function checkCondition($type, $typeContent) {
-        if(isset($typeContent) && $typeContent != '') {
-            if($type == 'title_content')
-                $template = 'AND (title like "%$content%" OR content like "%$content%") ';
-            else
-                $template = 'AND $type like "%$content%" ';
-            
-            $match = array('$type'=>$type, '$content'=>$typeContent);
-            return $typeCondition = strtr($template, $match);
-        } else {
+        if(!isset($typeContent) || $typeContent == '') 
             return '';
-        }
+
+        if($type == 'title_content')
+            $template = 'AND (title like "%$content%" OR content like "%$content%") ';
+        else
+            $template = 'AND $type like "%$content%" ';
+        
+        $match = array('$type'=>$type, '$content'=>$typeContent);
+        
+        return strtr($template, $match);
     }
 }
