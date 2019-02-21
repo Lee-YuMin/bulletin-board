@@ -31,12 +31,18 @@
       }
     </style>
 
+    <app-route
+      route="{{route}}"
+      pattern="/board_detail/:boardSeq"
+      data="{{routeData}}">
+    </app-route>
+
     <iron-ajax
-      id="ajax-insert-board"
-      url="/board/create.php"
-      body='[[insertBoardPrams]]'
+      id="ajax-detail-board"
+      url="/board/detail.php"
+      body='[[detailBoardPrams]]'
       handle-as="json"
-      method="POST"
+      method="GET"
       on-response="_insertBoardResponse"
       content-type="application/json"
       debounce-duration="300">
@@ -102,24 +108,28 @@
         pageNum: {
           type: String
         },
-        boardSeq: {
+        selected: {
           type: Object,
           observer: '_boardSeqChanged'
         },
+        routeData: {
+          type: Object,
+          observer: '_routeDataChanged'
+        }
 
       },
 
       created: function() {
-        console.log(this.pageNum)
+        
       },
-
-      _boardSeqChanged: function(boardSeq) {
-        console.log(boardSeq)
+      
+      _routeDataChanged: function(page) {
+        console.log(page)
       },
       
       // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
-        window.history.back(-1);
+        this.set('routeData.page', 'board');
       },
       
       // 저장 버튼 클릭시 동작
