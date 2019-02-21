@@ -54,7 +54,7 @@
       auto
       id="ajax-select-board-list"
       url="/board/read.php"
-      params='[[selectBoardListPrams]]'
+      params='[[selectBoardListParams]]'
       handle-as="json"
       method="GET"
       on-response="_selectBoardListResponse"
@@ -181,7 +181,7 @@
         let typeContent = this.$['type-input'].value;
         let pageNum = curPage || this.curPage;
 
-        this.selectBoardListPrams = {
+        this.selectBoardListParams = {
           pageNum,
           type,
           typeContent

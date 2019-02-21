@@ -34,7 +34,7 @@
     <iron-ajax
       id="ajax-insert-board"
       url="/board/create.php"
-      body="[[insertBoardPrams]]"
+      body="[[insertBoardParams]]"
       handle-as="json"
       method="POST"
       on-response="_insertBoardResponse"
@@ -110,7 +110,6 @@
         })
       },
       
-      // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
         this._reset();
         window.location.hash = '#/board/'
@@ -133,7 +132,7 @@
           }).catch((err) => {
             return null;
           }).then((data) => {
-            this.insertBoardPrams = JSON.stringify({ id, password, email, title, content, ip_add: data });
+            this.insertBoardParams = JSON.stringify({ id, password, email, title, content, ip_add: data });
             this.$['ajax-insert-board'].generateRequest();
           })
       },

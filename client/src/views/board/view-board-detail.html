@@ -41,10 +41,10 @@
     <iron-ajax
       id="ajax-detail-board"
       url="/board/detail.php"
-      body='[[detailBoardPrams]]'
+      body='[[detailBoardParams]]'
       handle-as="json"
       method="GET"
-      on-response="_insertBoardResponse"
+      on-response="_boardDetailResponse"
       content-type="application/json"
       debounce-duration="300">
     </iron-ajax>
@@ -71,12 +71,6 @@
           </td>
         </tr>
         <tr>
-          <td>비밀번호</td>
-          <td class="col-second">
-            <input type='password' id="input-password">
-          </td>
-        </tr>
-        <tr>
           <td>제 목</td>
           <td class="col-second">
             <input type='text' id="input-title">
@@ -90,9 +84,9 @@
         </tr>
         <tr>
           <td colspan=2 class="footer-menu">
-            <button on-click="_save">저장하기</button>
+            <button on-click="_reply">댓글 달기</button>
 
-            <button on-click="_reset">다시쓰기</button>
+            <button on-click="_delete">삭제</button>
           
             <button on-click="_back">뒤로가기</button>
           </td>
@@ -115,35 +109,57 @@
         },
         routeData: {
           type: Boolean,
-          observer: 'routeDataChanged'
-        }
+          observer: '_routeDataChanged'
+        },
+
+        observers: [
+          '_boardSeqChanged(routeData.boardSeq)'
+        ],
       },
       
-      routeDataChanged: function(page) {
-
-        console.log('here : ')
-        console.log(page)
+      _routeDataChanged: function(page) {
+        if(page.boardSeq)
+          this.boardSeq = page.boardSeq; 
+      },
+      
+      _boardSeqChanged: function(boardSeq) {
+        console.log('Get Board Detail')
+        this._getBoardDetail(boardSeq);
       },
 
-      // 뒤로가기 버튼 동작 시 브라우저 back
       _back: function() {
         window.location.hash = '#/board/'
       },
       
       // 저장 버튼 클릭시 동작
-      _save: function() {
-     
+      _reply: function() {
+        
+      },
+
+      _delete: function() {
+
       },
       
+      _getBoardDetail: function(boardSeq) {
+        this.detailBoardParams = {
+          boardSeq
+        },
+
+        this.$['ajax-detail-board'].generateRequest();
+      },
+
       // 게시글 등록 요청 응답
-      _insertBoardResponse: function(e) {
-        let status = e.detail.response && e.detail.response.status;
-        if(status && status.toUpperCase() === 'OK'){
-          this._openSuccessDialog();
-        } else {
-          let message = '게시글 등록을 실패하였습니다.';
-          this._openFailDialog(message);
-        }
+      _boardDetailResponse: function(e) {
+        
+        this.boardDetail = e.detail.response.board;
+
+        // let status = e.detail.response && e.detail.response.status;
+        // if(status && status.toUpperCase() === 'OK'){
+        //   this._openSuccessDialog();
+        // } else {
+        //   let message = '게시글 등록을 실패하였습니다.';
+        //   this._openFailDialog(message);
+        // }
       }
     });
   </script>
