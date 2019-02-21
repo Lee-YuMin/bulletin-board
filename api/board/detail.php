@@ -9,47 +9,30 @@ require_once '../db/db_connetion.php';
 require_once '../model/bulletin-board.php';
  
 $database = new Database();
-$db = $database->getConnection();
+$conn = $database->getConnection();
 
-$board = new BulletinBoard($db);
+$board = new BulletinBoard($conn);
 
-$board->type = $_GET['type'];
-$board->typeContent = $_GET['typeContent'];
-$board->pageNum = $_GET['pageNum'];
+$board->sequence = $_GET['sequence'] ? $_GET['sequence'] : die();
 
-$stmt = $board->read();
-$num = $stmt->rowCount();
+$board->detail();
 
-// 리턴되는 값 : 1. 총 보드의 개수, 2. 페이징 숫자 만큼의 보드 리스트
-$board_arr=array();
-$board_arr['count'] = $board->count();
+if(!is_null($board->sequence)) {
+    $board_detail = array(
+        'sequence'   => $board->sequence,
+        'id'         => $board->id,
+        'email'      => $board->email,
+        'title'      => $board->title,
+        'content'    => $board->content,
+        'ip_add'     => $board->ip_add,
+        'parent'     => $board->parent,
+        'created_at' => $board->created_at,
+    );
 
-if($num>0){
-    $board_arr['list']=array();
- 
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-
-        extract($row);
- 
-        $board_item=array(
-            'sequence'  => $sequence,
-            'id'        => $id,
-            'title'     => $title,
-            'view_count'=> $view_count,
-            'created_at'=> $created_at,
-            're_group'  => $re_group,
-            're_depth'  => $re_depth,
-            'parent'    => $parent
-        );
- 
-        array_push($board_arr['list'], $board_item);
-    }
-    
     http_response_code(200);
-    echo json_encode($board_arr);
+    echo json_encode($board_detail);
 } else {
-    $board_arr['list'] = [];
     http_response_code(404);
-    echo json_encode($board_arr);
+    echo json_encode(array("status"=>"fail"));
 }
 ?>
