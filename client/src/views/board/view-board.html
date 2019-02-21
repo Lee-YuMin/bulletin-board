@@ -82,7 +82,7 @@
           <template is="dom-repeat" items="[[boardList]]">
             <tr>
               <td>[[item.sequence]]</td>
-              <td><a href='/detail_board/[[item.sequence]]'>[[item.title]]</a></td>
+              <td><label on-click="_goToBoardDetail" seq="[[item.sequence]]">[[item.title]]</label></td>
               <td>[[item.id]]</td>
               <td>[[item.created_at]]</td>
               <td>[[item.view_count]]</td>
@@ -113,7 +113,7 @@
             검색
           </button>
             
-          <button class="btn-add" on-click="goToWriteBoard">새 글 쓰기</button>
+          <button class="btn-add" on-click="_goToWriteBoard">새 글 쓰기</button>
         </div>
     </div>
 
@@ -184,8 +184,13 @@
         }
       },
       
-      goToWriteBoard: function(route) {
+      _goToWriteBoard: function(e) {
         this.set('routeData.page', 'write_board');
+      },
+
+      _goToBoardDetail: function(e) {
+        let sequence = e.target.seq;
+        this.set('routeData.page', `board_detail/${sequence}`);
       },
 
       _getBoardList: function(curPage) {

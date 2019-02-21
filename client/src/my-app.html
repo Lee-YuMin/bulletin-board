@@ -48,6 +48,13 @@
         pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
+      
+    <app-route
+      route="{{subroute}}"
+      pattern="/:detail"
+      data="{{subrouteData}}">
+    </app-route>
+
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
@@ -86,10 +93,10 @@
               route-data="{{routeData}}">
           </write-board>
 
-          <view-detail-board 
-              name="detail_board">
-          </view-detail-board>
-          
+          <view-board-detail 
+              name="board_detail">
+          </view-board-detail>
+
           <not-found-view 
               name="not_found_view">
           </not-found-view>
@@ -128,7 +135,6 @@
 
       // 라우팅이 바뀔때 때마다 들어오는 함수
       _routePageChanged: function(page) {
-        console.log(page)
         this.page = page || 'main';
 
         if (!this.$.drawer.persistent) {
@@ -166,7 +172,7 @@
           ['main', 'view-main'],
           ['board', 'board/view-board'],
           ['write_board', 'board/write-board'],
-          ['detail_board', 'board/view-detail-board']
+          ['board_detail', 'board/view-board-detail']
         ]);
       }
     });
