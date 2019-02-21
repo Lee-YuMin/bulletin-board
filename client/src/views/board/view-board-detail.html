@@ -25,9 +25,18 @@
       .col-second {
         text-align: left;
       }
+
       td input,textarea {
         width: 100%;
         max-width: 400px;
+      }
+      
+      .label-ip {
+        font-size: 15px;
+        color: #333;
+      }
+      .label-content {
+        min-height: 200px;  
       }
     </style>
     
@@ -41,7 +50,7 @@
     <iron-ajax
       id="ajax-detail-board"
       url="/board/detail.php"
-      body='[[detailBoardParams]]'
+      params='[[detailBoardParams]]'
       handle-as="json"
       method="GET"
       on-response="_boardDetailResponse"
@@ -56,30 +65,30 @@
           <col style="width:80%">
         </colgroup>
         <tr>
-          <th colspan="2">[[title]]</th>
+          <th colspan="2">[[board.title]]</th>
         </tr>
         <tr>
-          <td >이름</td>
+          <td >이름 (IP)</td>
           <td class="col-second">
-            <input type="text" id="input-id">
+            <label type="text">[[board.id]] <label class="label-ip">([[board.ip_add]])</label></label>
           </td>
         </tr>
         <tr>
           <td>이메일</td>
           <td class="col-second">
-            <input type='text' id="input-email">
+            <label type='text'>[[board.email]]</label>
           </td>
         </tr>
         <tr>
-          <td>제 목</td>
+          <td>작성일</td>
           <td class="col-second">
-            <input type='text' id="input-title">
+            <label type='text'>[[board.created_at]]</label>
           </td>
         </tr>
         <tr>
           <td>내용</td>
           <td class="col-second">
-            <textarea id="input-content" cols=65 rows=15></textarea>
+              <div class="label-content"><label>[[board.content]]</label></div>
           </td>
         </tr>
         <tr>
@@ -103,13 +112,19 @@
         pageNum: {
           type: String
         },
+
         boardSeq: {
           type: Object,
           observer: '_boardSeqChanged'
         },
+
         routeData: {
           type: Boolean,
           observer: '_routeDataChanged'
+        },
+        
+        board: {
+          type: Object
         },
 
         observers: [
@@ -123,15 +138,15 @@
       },
       
       _boardSeqChanged: function(boardSeq) {
-        console.log('Get Board Detail')
         this._getBoardDetail(boardSeq);
       },
 
       _back: function() {
-        window.location.hash = '#/board/'
+        // TODO 왜 두번 호출해야 뒤로 갈까
+        window.location.hash = '#/board';
+        window.location.hash = '#/board';
       },
       
-      // 저장 버튼 클릭시 동작
       _reply: function() {
         
       },
@@ -142,7 +157,7 @@
       
       _getBoardDetail: function(boardSeq) {
         this.detailBoardParams = {
-          boardSeq
+          sequence: boardSeq
         },
 
         this.$['ajax-detail-board'].generateRequest();
@@ -150,16 +165,7 @@
 
       // 게시글 등록 요청 응답
       _boardDetailResponse: function(e) {
-        
-        this.boardDetail = e.detail.response.board;
-
-        // let status = e.detail.response && e.detail.response.status;
-        // if(status && status.toUpperCase() === 'OK'){
-        //   this._openSuccessDialog();
-        // } else {
-        //   let message = '게시글 등록을 실패하였습니다.';
-        //   this._openFailDialog(message);
-        // }
+        this.board = e.detail.response;
       }
     });
   </script>
