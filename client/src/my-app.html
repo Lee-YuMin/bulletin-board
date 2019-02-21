@@ -48,13 +48,6 @@
         pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
-      
-    <app-route
-      route="{{subroute}}"
-      pattern="/:detail"
-      data="{{subrouteData}}">
-    </app-route>
-
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
@@ -94,7 +87,9 @@
           </write-board>
 
           <view-board-detail 
-              name="board_detail">
+              name="board_detail"
+              route="{{subroute}}"
+              route-data="{{routeData}}">
           </view-board-detail>
 
           <not-found-view 
@@ -124,7 +119,7 @@
       },
 
       observers: [
-        '_routePageChanged(routeData.page)',
+        '_routePageChanged(routeData.page)'
       ],
 
       created: function () {
@@ -135,17 +130,19 @@
 
       // 라우팅이 바뀔때 때마다 들어오는 함수
       _routePageChanged: function(page) {
-        this.page = page || 'main';
+        console.log('route : ' + page)
+        this.page = page.split('/')[0] || 'main';
 
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
-
+        
         this.title = page.toUpperCase();
       },
 
       // 페이지가 바뀔 때마다 해당 경로의 파일을 로딩
       _pageChanged: function(page) {
+        console.log('page: ' + page)
         if(!page) 
           return;
 
