@@ -34,13 +34,13 @@ class BulletinBoard {
         $page = ($this->pageNum - 1) * $SELECT_LIMIT;
 
         $sql = 'SELECT ';
-        $sql.=     'sequence, id, title, view_count, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at, re_group, re_depth, parent ';
+        $sql.= '    sequence, id, title, view_count, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at, re_group, re_depth, parent ';
         $sql.= 'FROM ';
         $sql.=     $this->table_name;
         $sql.=' WHERE 1=1 ';
         $sql.= $this->checkCondition($this->type, $this->typeContent);
         $sql.= 'ORDER BY '; 
-        $sql.=     'sequence DESC ';
+        $sql.= '    sequence DESC ';
         $sql.= 'LIMIT :startNum, :pageCount;';
 
         $stmt = $this->conn->prepare($sql);
@@ -98,14 +98,13 @@ class BulletinBoard {
 
     function detail() {
         $sql = 'SELECT ';
-        $sql.=     'sequence, id, email, title, content, ip_add, parent, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at ';
+        $sql.= '    sequence, id, email, title, content, ip_add, parent, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at ';
         $sql.= 'FROM ';
         $sql.=     $this->table_name;
         $sql.=' WHERE sequence = :sequence ';
 
         $stmt = $this->conn->prepare($sql);
-        
-        // $this->id = htmlspecialchars(strip_tags($this->sequence));
+        $this->id = htmlspecialchars(strip_tags($this->sequence));
 
         $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
         $stmt->execute();
@@ -120,6 +119,18 @@ class BulletinBoard {
         $this->ip_add = $row['ip_add'];
         $this->parent = $row['parent'];
         $this->created_at = $row['created_at'];
+    }
+
+    function delete() {
+        $sql = 'DELETE FROM '.$this->table_name;
+        $sql.=' WHERE sequence = :sequence';
+
+        $stmt = $this->conn->prepare($sql);
+        $this->sequence = htmlspecialchars(strip_tags($this->sequence));
+
+        $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
+        
+        return $stmt->execute() ? true : false;
     }
 
     // 검색 조건이 있을시 조건 쿼리 String을, 없으면 ''을 리턴
