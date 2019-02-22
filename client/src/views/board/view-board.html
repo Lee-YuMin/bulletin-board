@@ -176,7 +176,7 @@
         window.location.hash = `#/board_detail/${sequence}`
       },
 
-      _getBoardList: function(curPage) {
+      getBoardList: function(curPage) {
         let type = this.$['type-select'].value;
         let typeContent = this.$['type-input'].value;
         let pageNum = curPage || this.curPage;
@@ -198,7 +198,7 @@
 
       _typeSubmit: function(e) {
         this.curPage = 1;
-        this._getBoardList();
+        this.getBoardList();
       },
       
       // board의 개수가 바뀌면 페이지 숫자를 계산
@@ -239,7 +239,7 @@
 
       // 현재 페이지가 변경되면 해당 페이지에 대한 보드 리스트를 다시 요청
       _curPageChanged: function(curPage) {
-        this._getBoardList(curPage);
+        this.getBoardList(curPage);
         this._clearTextHighlight();
       },
       

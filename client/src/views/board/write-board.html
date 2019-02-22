@@ -162,33 +162,10 @@
       _insertBoardResponse: function(e) {
         let status = e.detail.response && e.detail.response.status;
         if(status && status.toUpperCase() === 'OK'){
-          this._openSuccessDialog();
+          showDialog('성공', '게시글이 등록되었습니다.', 'board', this._reset());
         } else {
-          let message = '게시글 등록을 실패하였습니다.';
-          this._openFailDialog(message);
+          showDialog('실패', '게시글 등록을 실패하였습니다.');
         }
-      },
-      
-      // 게시글 등록 성공시 다이얼로그
-      _openSuccessDialog: function() {
-        let msg = {
-          title: '성공',
-          message: '게시글이 등록되었습니다.',
-          confirmCallback: () => {
-            this._reset();
-            window.location.hash = '#/board/'
-          }
-        }
-        document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
-      },
-      
-      // 게시글 등록 실패시 다이얼로그
-      _openFailDialog: function(message) {
-        let msg = {
-          title: '실패',
-          message
-        }
-        document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
       },
       
       // 사용자의 IP를 가져오는 로직
