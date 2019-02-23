@@ -155,9 +155,10 @@ class BulletinBoard {
         $sql = 'UPDATE ';
         $sql.=      $this->table_name;
         $sql.=' SET ';
-        $sql.= '    title    = :title,';
-        $sql.= '    email    = :email,';
-        $sql.= '    content  = :content';
+        $sql.= '    title      = :title,';
+        $sql.= '    email      = :email,';
+        $sql.= '    content    = :content';
+        $sql.= '    updated_at = sysdate()';
         $sql.=' WHERE ';
         $sql.= '    sequence = :sequence AND';
         $sql.= '    password = :password;';
