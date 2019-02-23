@@ -36,7 +36,7 @@ if($board->update()){
     echo json_encode(array('status' => 'ok'));
 } else { 
     // UPDATE 실패
-    http_response_code(200);
+    http_response_code(503);
     echo json_encode(array('status' => 'fail'));
 }
 ?>

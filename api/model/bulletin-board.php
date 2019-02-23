@@ -103,8 +103,8 @@ class BulletinBoard {
         $sql.='     (id, email, password, title, content, ip_add, view_count, ';
         $sql.='       re_order, re_depth, re_group, created_at, updated_at) ';
         $sql.=' VALUES ';
-        $sql.='     (:id, :email, :password, :title, :content, :ipAdd, 0, ';
-        $sql.='       :reOrder, :reDepth, :reGroup, sysdate(), sysdate());';
+        $sql.='     (:id, :email, :password, :title, :content, :ip_add, 0, ';
+        $sql.='       :re_order, :re_depth, :reGroup, sysdate(), sysdate());';
         
         $stmt = $this->conn->prepare($sql);
         
@@ -120,10 +120,10 @@ class BulletinBoard {
         $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
         $stmt->bindValue(':title',    $this->title, PDO::PARAM_STR);
         $stmt->bindValue(':content',  $this->content, PDO::PARAM_STR);
-        $stmt->bindValue(':ipAdd',    $this->ip_add, PDO::PARAM_STR);
+        $stmt->bindValue(':ip_add',   $this->ip_add, PDO::PARAM_STR);
         $stmt->bindValue(':reGroup',  $this->re_group, PDO::PARAM_INT);
-        $stmt->bindValue(':reOrder',  $this->re_order, PDO::PARAM_INT);
-        $stmt->bindValue(':reDepth',  $this->re_depth, PDO::PARAM_INT);
+        $stmt->bindValue(':re_order', $this->re_order, PDO::PARAM_INT);
+        $stmt->bindValue(':re_depth', $this->re_depth, PDO::PARAM_INT);
         
         return $stmt->execute() ? true : false;
     }

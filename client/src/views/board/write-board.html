@@ -39,6 +39,7 @@
       handle-as="json"
       method="POST"
       on-response="_insertBoardResponse"
+      on-error="_insertBoardError"
       content-type="application/json"
       debounce-duration="1000">
     </iron-ajax>
@@ -164,6 +165,11 @@
         } else {
           showDialog('실패', '게시글 등록을 실패하였습니다.');
         }
+      },
+      
+      //게시글 등록 요청 에러
+      _insertBoardError: function(e) {
+        showDialog('실패', '게시글 등록을 실패하였습니다.');
       }
     });
   </script>
