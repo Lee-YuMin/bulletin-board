@@ -17,27 +17,26 @@ $board = new BulletinBoard($db);
 $data = json_decode(file_get_contents('php://input'));
 
 // NOT NULL 데이터 체크
-if( empty($data->id) || empty($data->password) || empty($data->title)) {
+if( empty($data->sequence) || empty($data->password) || empty($data->title)) {
     // 데이터 유효성 검사 실패 시 리턴
     http_response_code(400);
     echo json_encode(array('status' => 'fail'));
 }
     
 // 유효성 검사 통과시 넘어온 데이터로 board 객체 생성
-$board->id       = $data->id;
-$board->password = $data->password;
-$board->email    = $data->email;
+$board->sequence = $data->sequence;
 $board->title    = $data->title;
-$board->content =  $data->content;
-$board->ip_add   = $data->ip_add;
+$board->email    = $data->email;
+$board->content  = $data->content;
+$board->password = $data->password;
 
-if($board->create()){
-    // INSERT 성공
-    http_response_code(201);
+if($board->update()){
+    // UPDATE 성공
+    http_response_code(200);
     echo json_encode(array('status' => 'ok'));
 } else { 
-    // INSERT 실패
-    http_response_code(503);
+    // UPDATE 실패
+    http_response_code(200);
     echo json_encode(array('status' => 'fail'));
 }
 ?>

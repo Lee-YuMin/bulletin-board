@@ -44,6 +44,7 @@ class BulletinBoard {
         $sql.= 'LIMIT :startNum, :pageCount;';
 
         $stmt = $this->conn->prepare($sql);
+
         $stmt->bindValue(':startNum', $page, PDO::PARAM_INT);
         $stmt->bindValue(':pageCount', $SELECT_LIMIT, PDO::PARAM_INT);
         $stmt->execute();
@@ -150,10 +151,45 @@ class BulletinBoard {
         return $stmt->execute() ? true : false;
     }
 
+    function update() {
+        $sql = 'UPDATE ';
+        $sql.=      $this->table_name;
+        $sql.=' SET ';
+        $sql.= '    title    = :title,';
+        $sql.= '    email    = :email,';
+        $sql.= '    content  = :content';
+        $sql.=' WHERE ';
+        $sql.= '    sequence = :sequence AND';
+        $sql.= '    password = :password;';
+
+        $stmt = $this->conn->prepare($sql);
+        
+        $this->sequence = htmlspecialchars(strip_tags($this->sequence));
+        $this->password = htmlspecialchars(strip_tags($this->password));
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->content = htmlspecialchars(strip_tags($this->content));
+        
+        $stmt->bindValue(':title', $this->title, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
+        $stmt->bindValue(':content', $this->content, PDO::PARAM_STR);
+        $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
+        $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
+
+        $stmt->execute();
+        
+        // 변경된 row의 수
+        return $stmt->rowCount();
+    }
+
     // 검색 조건이 있을시 조건 쿼리 String을, 없으면 ''을 리턴
     private function checkCondition($type, $typeContent) {
         if(!isset($typeContent) || $typeContent == '') 
             return '';
+
+            
+        $type = htmlspecialchars(strip_tags($type));
+        $typeContent = htmlspecialchars(strip_tags($typeContent));
 
         if($type == 'title_content')
             $template = 'AND (title like "%$content%" OR content like "%$content%") ';
