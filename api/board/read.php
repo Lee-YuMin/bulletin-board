@@ -13,12 +13,13 @@ $conn = $database->getConnection();
 
 $board = new BulletinBoard($conn);
 
+// 검색 조건을 위한 파라미터
 $board->type = $_GET['type'];
 $board->typeContent = $_GET['typeContent'];
 $board->pageNum = $_GET['pageNum'];
 
 // 리턴되는 값 : 1. 총 보드의 개수, 2. 페이징 숫자 만큼의 보드 리스트
-$board_arr=array();
+$board_arr = array();
 $board_arr['count'] = $board->count();
 $board_arr['list'] = [];
 
@@ -33,9 +34,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
         'title'     => $title,
         'view_count'=> $view_count,
         'created_at'=> $created_at,
-        're_group'  => $re_group,
+        're_order'  => $re_order,
         're_depth'  => $re_depth,
-        'parent'    => $parent
+        're_group'  => $re_group
     );
 
     array_push($board_arr['list'], $board_item);

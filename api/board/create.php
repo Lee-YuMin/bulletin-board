@@ -24,12 +24,13 @@ if( empty($data->id) || empty($data->password) || empty($data->title)) {
 }
     
 // 유효성 검사 통과시 넘어온 데이터로 board 객체 생성
-$board->id       = $data->id;
-$board->password = $data->password;
-$board->email    = $data->email;
-$board->title    = $data->title;
-$board->content =  $data->content;
-$board->ip_add   = $data->ip_add;
+$board->id        = $data->id;
+$board->password  = $data->password;
+$board->email     = $data->email;
+$board->title     = $data->title;
+$board->content   = $data->content;
+$board->ip_add    = $data->ip_add;
+$board->parentSeq = property_exists($data, 'parentSeq') ? $data->parentSeq : null;  // parentSeq이 있다면 답변 글, 없다면 원글
 
 if($board->create()){
     // INSERT 성공
