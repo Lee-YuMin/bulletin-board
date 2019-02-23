@@ -17,7 +17,7 @@
         background: #fff;
       }
 
-      .footer-menu > button {
+      .footer-menu button {
         padding: 5px 10px 5px 10px;
         margin: 0px 2px;
       }
@@ -38,6 +38,25 @@
       .label-content {
         min-height: 200px;  
       }
+      th input.edit-node {
+        text-align: center;
+      }
+
+      .edit-node {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      
+      .edit-form {
+        display: none;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .view {
+        display: table-row;
+      }
     </style>
     
     <app-location route="{{route}}" use-hash-as-path></app-location>
@@ -47,26 +66,40 @@
       data="{{routeData}}">
     </app-route>
 
+    <!-- 게시글 상세 정보 조회 요청 AJAX -->
     <iron-ajax
       id="ajax-detail-board"
       url="/board/detail.php"
-      params='[[detailBoardParams]]'
+      params="[[detailBoardParams]]"
       handle-as="json"
       method="GET"
       on-response="_boardDetailResponse"
       content-type="application/json"
-      debounce-duration="300">
+      debounce-duration="1000">
     </iron-ajax>
 
+    <!-- 게시글 삭제 요청 AJAX -->
     <iron-ajax
       id="ajax-delete-board"
       url="/board/delete.php"
-      params='[[deleteBoardParams]]'
+      params="[[deleteBoardParams]]"
       handle-as="json"
       method="GET"
       on-response="_boardDeleteResponse"
       content-type="application/json"
-      debounce-duration="300">
+      debounce-duration="1000">
+    </iron-ajax>
+
+    <!-- 게시글 수정 요청 AJAX -->
+    <iron-ajax
+      id="ajax-update-board"
+      url="/board/update.php"
+      body="[[updateBoardParams]]"
+      handle-as="json"
+      method="POST"
+      on-response="_boardUpdateResponse"
+      content-type="application/json"
+      debounce-duration="1000">
     </iron-ajax>
 
     <div class="container">
@@ -76,18 +109,22 @@
           <col style="width:80%">
         </colgroup>
         <tr>
-          <th colspan="2">[[board.title]]</th>
+          <th colspan="2">
+            <label class="detail-form">[[board.title]]</label>
+            <input id="edit-title" class="edit-form edit-node" value="[[board.title]]">
+          </th>
         </tr>
         <tr>
           <td >이름 (IP)</td>
           <td class="col-second">
-            <label type="text">[[board.id]] <label class="label-ip">([[board.ip_add]])</label></label>
+            <label>[[board.id]]</label> <label class="label-ip">([[board.ip_add]])</label>
           </td>
         </tr>
         <tr>
           <td>이메일</td>
           <td class="col-second">
-            <label type='text'>[[board.email]]</label>
+            <label class="detail-form">[[board.email]]</label>
+            <input id="edit-email" class="edit-form edit-node" value="[[board.email]]">
           </td>
         </tr>
         <tr>
@@ -99,18 +136,27 @@
         <tr>
           <td>내용</td>
           <td class="col-second">
-              <div class="label-content"><label>[[board.content]]</label></div>
+              <div class="label-content">
+                <label class="detail-form">[[board.content]]</label>
+                <textarea id="edit-content" class="label-content edit-form edit-node">[[board.content]]</textarea>
+              </div>
+          </td>
+        </tr>
+        <tr class="edit-form">
+          <td>비밀번호</td>
+          <td class="col-second">
+            <input id="edit-password" type='password' class="edit-form edit-node">
           </td>
         </tr>
         <tr>
           <td colspan=2 class="footer-menu">
-            <button on-click="_reply">댓글 달기</button>
+            <button on-click="_reply" class="detail-form">댓글 달기</button>
+            <button on-click="_editMode" class="detail-form">수정</button>
+            <button on-click="_delete" class="detail-form">삭제</button>
+            <button on-click="_back" class="detail-form">뒤로가기</button>
 
-            <button on-click="_update">수정</button>
-
-            <button on-click="_delete">삭제</button>
-          
-            <button on-click="_back">뒤로가기</button>
+            <button on-click="_commit" class="edit-form">완료</button>
+            <button on-click="_detailMode" class="edit-form">취소</button>
           </td>
         </tr>
       </table>
@@ -146,15 +192,15 @@
       },
       
       _routeDataChanged: function(page) {
-        if(page.boardSeq)
-          this.boardSeq = page.boardSeq; 
+          // Route Pattern이 '/board_detail/:boardSeq' 이여야 동작
+          this.boardSeq = page.boardSeq ? page.boardSeq : null;
       },
       
       _boardSeqChanged: function(boardSeq) {
         this._getBoardDetail(boardSeq);
       },
 
-      _back: function() {
+      _back: function() { 
         // TODO 왜 두번 호출해야 뒤로 갈까
         window.location.hash = '#/board';
         window.location.hash = '#/board';
@@ -172,8 +218,45 @@
         this.$['ajax-delete-board'].generateRequest();
       },
 
-      _update: function() {
-        console.log(123)
+      // 게시글 편집 모드
+      _editMode: function() {
+        this.shadowRoot.querySelectorAll('.detail-form').forEach(node => {
+          node.classList.add('hidden');
+        });
+
+        this.shadowRoot.querySelectorAll('.edit-form').forEach(node => {
+          node.classList.add('view');
+        });
+      },
+      
+      // 게시글 보기 모드
+      _detailMode: function() {
+        this.shadowRoot.querySelectorAll('.detail-form').forEach(node => {
+          node.classList.remove('hidden');
+        });
+
+        this.shadowRoot.querySelectorAll('.edit-form').forEach(node => {
+          node.classList.remove('view');
+        });
+
+        this.$['edit-password'].value = '';
+      },
+  
+      _commit: function() {
+        let title = this.$['edit-title'].value;
+        let email = this.$['edit-email'].value;
+        let content = this.$['edit-content'].value;
+        let password = this.$['edit-password'].value;
+        let sequence = this.boardSeq;
+        
+        let obj = { sequence, title, email, content, password };
+
+        if(!this._validation(obj))
+          return;
+
+        this.updateBoardParams = JSON.stringify(obj);
+
+        this.$['ajax-update-board'].generateRequest();
       },
       
       _getBoardDetail: function(boardSeq) {
@@ -195,11 +278,43 @@
         let status = e.detail.response && e.detail.response.status;
         let callback = document.querySelector('my-app::shadow view-board').getBoardList();
         
-        if(status && status.toUpperCase() === 'OK'){
+        if(status && status.toUpperCase() === 'OK') {
           showDialog('성공', '게시글이 삭제되었습니다.', 'board', callback);
         } else {
           showDialog('실패', '게시글 삭제에 실패하였습니다.');
         }
+      },
+
+      _boardUpdateResponse: function(e) {
+        let status = e.detail.response && e.detail.response.status;
+
+        if(status && status.toUpperCase() == 'OK') {
+          showDialog('성공', '게시글이 변경되었습니다.', '', this._boardUpdateSuccess());
+        } else {
+          showDialog('실패', '비밀번호를 확인해 주세요'); 
+        }
+      },
+
+      _boardUpdateSuccess: function() {
+        this._detailMode();
+        this._getBoardDetail(this.boardSeq);
+      },
+      
+      _validation:function(obj) {
+        let board = this.board;
+
+        if(!obj.title || obj.title == ''){
+          showDialog('실패', '제목을 입력해 주세요.');
+          return false;
+        } else if (!obj.password || obj.password == ''){
+          showDialog('실패', '비밀번호를 입력해 주세요.');
+          return false;
+        } else if(obj.title == board.title && obj.email == board.email && obj.content == board.content) {
+          showDialog('실패', '변경된 내용이 없습니다.');
+          return false;
+        }
+
+        return true;
       }
     });
   </script>

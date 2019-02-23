@@ -187,7 +187,6 @@ class BulletinBoard {
         if(!isset($typeContent) || $typeContent == '') 
             return '';
 
-            
         $type = htmlspecialchars(strip_tags($type));
         $typeContent = htmlspecialchars(strip_tags($typeContent));
 

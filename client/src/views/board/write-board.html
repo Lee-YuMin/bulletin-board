@@ -147,13 +147,12 @@
         let message = '';
         
         if(!id || !id.match(pattern)){
-          message = '아이디를 올바르게 입력해주세요.';
+          showDialog('실패', '이름을 올바르게 입력해주세요.');
         } else if(!password || !password.match(pattern)){
-          message = '비밀번호를 올바르게 입력해주세요.';
+          showDialog('실패', '비밀번호를 올바르게 입력해주세요.');
         } else if(!title){
-          message = '제목을 입력해주세요.';
+          showDialog('실패', '제목을 입력해주세요.');
         }
-        this._openFailDialog(message);
 
         return false;
       },
@@ -167,7 +166,7 @@
           showDialog('실패', '게시글 등록을 실패하였습니다.');
         }
       },
-      
+
       // 사용자의 IP를 가져오는 로직
       _getIp: function() {
         return new Promise((resolve, resject) => {
