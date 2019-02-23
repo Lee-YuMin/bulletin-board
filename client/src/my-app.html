@@ -39,7 +39,6 @@
       div[main-title] {
         text-align: center;
       }
-
     </style>
 
     <app-location route="{{route}}" use-hash-as-path></app-location>
@@ -152,7 +151,7 @@
       },
 
       _showPage404: function() {
-        this.page = 'not-found-view';
+        this.page = 'not_found_view';
       },
 
       /* 다이얼로그 파라미터 
@@ -171,7 +170,8 @@
           ['board', 'board/view-board'],
           ['write_board', 'board/write-board'],
           ['board_detail', 'board/view-board-detail'],
-          ['reply', 'board/view-reply-board']
+          ['reply', 'board/view-reply-board'],
+          ['not_found_view', 'not-found-view']
         ]);
       }
     });
