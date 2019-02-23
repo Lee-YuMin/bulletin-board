@@ -85,10 +85,13 @@
           </write-board>
 
           <view-board-detail 
-              name="board_detail"
-              route-data="[[routeData]]">
+              name="board_detail">
           </view-board-detail>
-
+          
+          <view-reply-board 
+              name="reply">
+          </view-reply-board>
+          
           <not-found-view 
               name="not_found_view">
           </not-found-view>
@@ -167,7 +170,8 @@
           ['main', 'view-main'],
           ['board', 'board/view-board'],
           ['write_board', 'board/write-board'],
-          ['board_detail', 'board/view-board-detail']
+          ['board_detail', 'board/view-board-detail'],
+          ['reply', 'board/view-reply-board']
         ]);
       }
     });

@@ -5,10 +5,8 @@ function showDialog(title, message, url, callback) {
         confirmCallback: () => {
           callback ? callback : '';
 
-          if(url && url != ''){
+          if(url && url != '')
               window.location.hash = `#/${url}`;
-              window.location.hash = `#/${url}`;
-            }
         }
       }
 

@@ -29,12 +29,7 @@ Request Value : sequence
 Response Value : status
 Output : 성공 or 실패
 
-<게시글 수정 화면>
-Request Value : sequence
-Response Value : sequence, id, email, title, content
-Output : 수정 화면
-
 <게시글 수정 요청>
-Request Value : sequence, id, email, password, title, content, created_at, updated_at
+Request Value : sequence, id, email, password, title, content
 Response Value : status
 Output : 성공 or 실패

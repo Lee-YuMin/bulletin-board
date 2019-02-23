@@ -150,7 +150,7 @@
         </tr>
         <tr>
           <td colspan=2 class="footer-menu">
-            <button on-click="_reply" class="detail-form">댓글 달기</button>
+            <button on-click="_reply" class="detail-form">답글 달기</button>
             <button on-click="_editMode" class="detail-form">수정</button>
             <button on-click="_delete" class="detail-form">삭제</button>
             <button on-click="_back" class="detail-form">뒤로가기</button>
@@ -197,17 +197,16 @@
       },
       
       _boardSeqChanged: function(boardSeq) {
-        this._getBoardDetail(boardSeq);
+        if(boardSeq)
+          this._getBoardDetail(boardSeq);
       },
 
       _back: function() { 
-        // TODO 왜 두번 호출해야 뒤로 갈까
-        window.location.hash = '#/board';
-        window.location.hash = '#/board';
+        window.location.hash = '#/board/';
       },
       
       _reply: function() {
-        
+        window.location.hash = `#/reply/${this.boardSeq}`;
       },
 
       _delete: function() {
@@ -227,6 +226,10 @@
         this.shadowRoot.querySelectorAll('.edit-form').forEach(node => {
           node.classList.add('view');
         });
+
+        this.$['edit-title'].value = this.board.title;
+        this.$['edit-email'].value = this.board.email;
+        this.$['edit-content'].value = this.board.content;
       },
       
       // 게시글 보기 모드
