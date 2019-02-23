@@ -12,15 +12,16 @@ class BulletinBoard {
     public $content;
     public $ip_add;
     public $view_count;
-    public $re_group;
+    public $re_order;
     public $re_depth;
-    public $parent;
+    public $re_group;
     public $created_at;
     public $updated_at;
 
     public $pageNum;
     public $type;
     public $typeContent;
+    public $parentSeq;
 
     public function __construct($db){
         $this->conn = $db;
@@ -34,13 +35,13 @@ class BulletinBoard {
         $page = ($this->pageNum - 1) * $SELECT_LIMIT;
 
         $sql = 'SELECT ';
-        $sql.= '    sequence, id, title, view_count, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at, re_group, re_depth, parent ';
+        $sql.= '    sequence, id, title, view_count, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at, re_order, re_depth, re_group ';
         $sql.= 'FROM ';
         $sql.=     $this->table_name;
         $sql.=' WHERE 1=1 ';
-        $sql.= $this->checkCondition($this->type, $this->typeContent);
+        $sql.= $this->_checkCondition($this->type, $this->typeContent);
         $sql.= 'ORDER BY '; 
-        $sql.= '    sequence DESC ';
+        $sql.= '    re_group DESC, re_order ASC, sequence DESC ';
         $sql.= 'LIMIT :startNum, :pageCount;';
 
         $stmt = $this->conn->prepare($sql);
@@ -56,7 +57,7 @@ class BulletinBoard {
     function count() {
         $sql = 'SELECT count(*) as count FROM '.$this->table_name;
         $sql.= ' WHERE 1=1 ';
-        $sql.= $this->checkCondition($this->type, $this->typeContent);
+        $sql.= $this->_checkCondition($this->type, $this->typeContent);
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -66,16 +67,28 @@ class BulletinBoard {
     }
 
     function create() {
-        // "부모의 시퀀스 = 그룹 아이디" 를 위한 [최대 시퀀스+1] 계산
-        $re_group = '(SELECT * FROM (SELECT MAX(seqeunce)+1 as seqeunce FROM board) tmp);';
+        // parentSeq이 없다면 원글
+        if(is_null($this->parentSeq)) {
+            $this->re_group = $this->_getNextSequence();
+            $this->re_order = 0;
+            $this->re_depth = 0;
+        } else {
+            $parent = $this->_getParent($this->parentSeq);
 
+            $this->re_group = $parent['re_group'];
+            $this->re_order = $parent['re_order'] + 1;
+            $this->re_depth = $parent['re_depth'] + 1;
+
+            $this->_shiftSibling($parent);
+        }
+        
         // 데이터 삽입
         $sql = 'INSERT INTO '.$this->table_name;
         $sql.= '    (id, email, password, title, content, ip_add, view_count, ';
-        $sql.= '      re_group, re_depth, parent, created_at, updated_at) ';
+        $sql.= '      re_order, re_depth, re_group, created_at, updated_at) ';
         $sql.= 'VALUES ';
         $sql.= '    (:id, :email, :password, :title, :content, :ipAdd, 0, ';
-        $sql.= '      :reGroup, 0, 0, sysdate(), sysdate());';
+        $sql.= '      :reOrder, :reDepth, :reGroup, sysdate(), sysdate());';
         
         $stmt = $this->conn->prepare($sql);
         
@@ -92,14 +105,16 @@ class BulletinBoard {
         $stmt->bindValue(':title',    $this->title, PDO::PARAM_STR);
         $stmt->bindValue(':content',  $this->content, PDO::PARAM_STR);
         $stmt->bindValue(':ipAdd',    $this->ip_add, PDO::PARAM_STR);
-        $stmt->bindValue(':reGroup',  $re_group, PDO::PARAM_INT);
-
+        $stmt->bindValue(':reGroup',  $this->re_group, PDO::PARAM_INT);
+        $stmt->bindValue(':reOrder',  $this->re_order, PDO::PARAM_INT);
+        $stmt->bindValue(':reDepth',  $this->re_depth, PDO::PARAM_INT);
+        
         return $stmt->execute() ? true : false;
     }
 
     function detail() {
         $sql = 'SELECT ';
-        $sql.= '    sequence, id, email, title, content, ip_add, parent, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at ';
+        $sql.= '    sequence, id, email, title, content, ip_add, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at ';
         $sql.= 'FROM ';
         $sql.=     $this->table_name;
         $sql.=' WHERE sequence = :sequence;';
@@ -118,7 +133,6 @@ class BulletinBoard {
         $this->title = $row['title'];
         $this->content = $row['content'];
         $this->ip_add = $row['ip_add'];
-        $this->parent = $row['parent'];
         $this->created_at = $row['created_at'];
     }
 
@@ -179,12 +193,12 @@ class BulletinBoard {
 
         $stmt->execute();
         
-        // 변경된 row의 수
+        // 변경된 row의 수 (실행이 되어도 변한 값이 없을경우 0을 리턴)
         return $stmt->rowCount();
     }
 
     // 검색 조건이 있을시 조건 쿼리 String을, 없으면 ''을 리턴
-    private function checkCondition($type, $typeContent) {
+    private function _checkCondition($type, $typeContent) {
         if(!isset($typeContent) || $typeContent == '') 
             return '';
 
@@ -199,5 +213,54 @@ class BulletinBoard {
         $match = array('$type'=>$type, '$content'=>$typeContent);
         
         return strtr($template, $match);
+    }
+
+    // 최대 시퀀스 + 1을 구하기 위한 함수
+    private function _getNextSequence() {
+        $sql = 'SELECT * FROM (SELECT MAX(sequence)+1 as sequence FROM board) a';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC)['sequence'];
+    }
+
+    private function _getParent($parentSeq) {
+        $sql = '';
+        $sql.=' SELECT';
+        $sql.='     sequence, re_group, re_order, re_depth';
+        $sql.=' FROM ';
+        $sql.=      $this->table_name;
+        $sql.=' WHERE';
+        $sql.='     sequence = :sequence';
+
+        $stmt = $this->conn->prepare($sql);
+        $parentSeq = htmlspecialchars(strip_tags($parentSeq));
+        
+        $stmt->bindValue(':sequence', $parentSeq, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // 최신 답글이 위로 올라오기 위해 같은 그룹들의 글들을 뒤로 한칸 씩 쉬프트
+    private function _shiftSibling($parent) {
+        $sql = '';
+        $sql.=' UPDATE ';
+        $sql.=      $this->table_name;
+        $sql.=' SET ';
+        $sql.='     re_order = re_order + 1';
+        $sql.=' WHERE';
+        $sql.='     re_group = :re_group AND';
+        $sql.='     re_order > :re_order;';
+
+        $stmt = $this->conn->prepare($sql);
+
+        $parent['re_group'] = htmlspecialchars(strip_tags($parent['re_group']));
+        $parent['re_order'] = htmlspecialchars(strip_tags($parent['re_order']));
+        
+        $stmt->bindValue(':re_group', $parent['re_group'], PDO::PARAM_INT);
+        $stmt->bindValue(':re_order', $parent['re_order'], PDO::PARAM_INT);
+
+        $stmt->execute();
     }
 }

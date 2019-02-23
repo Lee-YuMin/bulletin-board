@@ -26,8 +26,7 @@ if(!is_null($board->sequence)) {
         'title'      => $board->title,
         'content'    => $board->content,
         'ip_add'     => $board->ip_add,
-        'parent'     => $board->parent,
-        'created_at' => $board->created_at,
+        'created_at' => $board->created_at
     );
 
     http_response_code(200);

@@ -76,7 +76,7 @@
 				<div id="title">[[title]]</div>
 					<span id="message">[[message]]</span>
 				<div id="button-container">
-						<button id="confirm-btn" on-click="confirmBtnClicked">확인</button>
+						<button id="confirm-btn" on-click="_confirmBtnClicked">확인</button>
 				</div>
 			</div>
 		</div>
@@ -106,16 +106,16 @@
 			},
 			
 			// 확인 버튼을 누를때, 다이얼로그를 끄면서 콜백이 있으면 콜백을 동작 시킴
-			confirmBtnClicked: function () {
+			_confirmBtnClicked: function () {
 				this.$['modal'].style.display = 'none';
 				if (this.confirmCallback) {
 					this.confirmCallback();
 				}
-				this.resetOpt();
+				this._resetOpt();
 			},
 
 			// 옵션 값들을 제거
-			resetOpt: function () {
+			_resetOpt: function () {
 				this.title = '';
 				this.message = '';
 				this.confirmCallback = null;

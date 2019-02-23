@@ -48,6 +48,11 @@
       .select-highlight {
         font-weight: bold;
       }
+
+      .row-title {
+        text-align: left;
+        padding-left: 20px;
+      }
     </style>
 
     <iron-ajax
@@ -82,7 +87,7 @@
           <template is="dom-repeat" items="[[boardList]]">
             <tr>
               <td>[[item.sequence]]</td>
-              <td><label on-click="_goToBoardDetail" seq="[[item.sequence]]">[[item.title]]</label></td>
+              <td class="row-title"><label on-click="_goToBoardDetail" seq="[[item.sequence]]">[[_computeTitle(item)]]</label></td>
               <td>[[item.id]]</td>
               <td>[[item.created_at]]</td>
               <td>[[item.view_count]]</td>
@@ -287,6 +292,14 @@
       _keypressTypeInput: function(e) {
         if(e.keyCode == 13)
           this._typeSubmit();
+      },
+
+      _computeTitle: function(item) {
+        let title = '';
+        for(let i=0; i<item.re_depth; i++)
+          title += 'RE: ';
+        
+         return title += item.title;
       }
     });
   </script>
