@@ -14,7 +14,7 @@ Database is MySQL 8.0, Web Server is NginX.
 1. Modify Board
 1. Delete Board
 
-![main][logo]
+![capture](https://user-images.githubusercontent.com/14229774/53291354-10ce9500-37f5-11e9-8915-55133d1aae61.PNG)
 
 ## Dev Dependencies And Environment
 * Polymer 1.0
@@ -24,5 +24,3 @@ Database is MySQL 8.0, Web Server is NginX.
 * NPM
 * Bower
 * Gulp
-
-[logo]: ./client/images/board.png
