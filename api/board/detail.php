@@ -15,6 +15,7 @@ $board = new BulletinBoard($conn);
 
 $board->sequence = $_GET['sequence'] ? $_GET['sequence'] : die();
 
+$board->viewCountIncrease();
 $board->detail();
 
 if(!is_null($board->sequence)) {

@@ -66,7 +66,7 @@ class BulletinBoard {
 
     function create() {
         // "부모의 시퀀스 = 그룹 아이디" 를 위한 [최대 시퀀스+1] 계산
-        $re_group = '(SELECT * FROM (SELECT MAX(seqeunce)+1 as seqeunce FROM board) tmp)';
+        $re_group = '(SELECT * FROM (SELECT MAX(seqeunce)+1 as seqeunce FROM board) tmp);';
 
         // 데이터 삽입
         $sql = 'INSERT INTO '.$this->table_name;
@@ -101,10 +101,10 @@ class BulletinBoard {
         $sql.= '    sequence, id, email, title, content, ip_add, parent, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at ';
         $sql.= 'FROM ';
         $sql.=     $this->table_name;
-        $sql.=' WHERE sequence = :sequence ';
+        $sql.=' WHERE sequence = :sequence;';
 
         $stmt = $this->conn->prepare($sql);
-        $this->id = htmlspecialchars(strip_tags($this->sequence));
+        $this->sequence = htmlspecialchars(strip_tags($this->sequence));
 
         $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
         $stmt->execute();
@@ -121,9 +121,26 @@ class BulletinBoard {
         $this->created_at = $row['created_at'];
     }
 
+    function viewCountIncrease() {
+        $sql = 'UPDATE ';
+        $sql.=      $this->table_name;
+        $sql.=' SET ';
+        $sql.= '    view_count = view_count + 1';
+        $sql.=' WHERE ';
+        $sql.= '    sequence = :sequence;';
+
+        $stmt = $this->conn->prepare($sql);
+        $this->sequence = htmlspecialchars(strip_tags($this->sequence));
+        
+        $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     function delete() {
-        $sql = 'DELETE FROM '.$this->table_name;
-        $sql.=' WHERE sequence = :sequence';
+        $sql = 'DELETE FROM ';
+        $sql.=      $this->table_name;
+        $sql.=' WHERE ';
+        $sql.='     sequence = :sequence';
 
         $stmt = $this->conn->prepare($sql);
         $this->sequence = htmlspecialchars(strip_tags($this->sequence));
