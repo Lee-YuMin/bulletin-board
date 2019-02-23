@@ -55,6 +55,7 @@
       }
     </style>
 
+    <!-- 게시글 리스트 요청 AJAX -->
     <iron-ajax
       auto
       id="ajax-select-board-list"
@@ -191,6 +192,7 @@
         window.location.hash = `/board_detail/${sequence}`;
       },
 
+      // 보드 리스트 요청
       getBoardList: function(curPage) {
         let type = this.$['type-select'].value;
         let typeContent = this.$['type-input'].value;
@@ -205,12 +207,14 @@
         this.$['ajax-select-board-list'].generateRequest();
       },
 
+      // 게시글 리스트 응답
       _selectBoardListResponse: function(e) {
         this.boardList = e.detail.response.list;
         this.boardCount = e.detail.response.count;
         this._setHighlightClickedText(this.curPage);
       },
-
+      
+      // 검색 조건
       _typeSubmit: function(e) {
         this.curPage = 1;
         this.getBoardList();

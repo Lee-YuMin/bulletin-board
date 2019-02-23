@@ -131,14 +131,17 @@
       },
       
       _routeDataChanged: function(page) {
+          // Route Pattern이 '/reply/:boardSeq' 일 때 동작
           this.boardSeq = page.boardSeq ? page.boardSeq : null;
       },
       
+      // 보드 시퀀스가 바뀌면 새롭게 데이터 요청
       _boardSeqChanged: function(boardSeq) {
         if(boardSeq)
           this._getBoardDetail(boardSeq);
       },
       
+      // 게시글 상세 조회 요청
       _getBoardDetail: function(boardSeq) {
         this.board = null;
         this.detailBoardParams = {
