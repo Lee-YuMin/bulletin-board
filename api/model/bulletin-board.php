@@ -34,15 +34,25 @@ class BulletinBoard {
         // 몇 번째의 페이지 인지 계산 : (페이지 번호 - 1) * 한 페이지의 총 개수
         $page = ($this->pageNum - 1) * $SELECT_LIMIT;
 
-        $sql = 'SELECT ';
-        $sql.= '    sequence, id, title, view_count, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at, re_order, re_depth, re_group ';
-        $sql.= 'FROM ';
+        $sql = '';
+        $sql.=' SELECT ';
+        $sql.='    sequence,';
+        $sql.='    id,';
+        $sql.='    title,'; 
+        $sql.='    view_count, ';
+        $sql.='    DATE_FORMAT(created_at, "%Y-%m-%d") as created_at,';
+        $sql.='    re_order,';
+        $sql.='    re_depth,';
+        $sql.='    re_group ';
+        $sql.=' FROM ';
         $sql.=     $this->table_name;
         $sql.=' WHERE 1=1 ';
-        $sql.= $this->_checkCondition($this->type, $this->typeContent);
-        $sql.= 'ORDER BY '; 
-        $sql.= '    re_group DESC, re_order ASC, sequence DESC ';
-        $sql.= 'LIMIT :startNum, :pageCount;';
+        $sql.=     $this->_checkCondition($this->type, $this->typeContent);
+        $sql.=' ORDER BY '; 
+        $sql.='    re_group DESC,';
+        $sql.='    re_order ASC,';
+        $sql.='    sequence DESC';
+        $sql.=' LIMIT :startNum, :pageCount;';
 
         $stmt = $this->conn->prepare($sql);
 
@@ -55,9 +65,13 @@ class BulletinBoard {
 
     // 페이징을 위한 총 데이터 개수
     function count() {
-        $sql = 'SELECT count(*) as count FROM '.$this->table_name;
-        $sql.= ' WHERE 1=1 ';
-        $sql.= $this->_checkCondition($this->type, $this->typeContent);
+        $sql = '';
+        $sql.=' SELECT ';
+        $sql.='     count(*) as count';
+        $sql.=' FROM ';
+        $sql.=      $this->table_name;
+        $sql.=' WHERE 1=1 ';
+        $sql.=      $this->_checkCondition($this->type, $this->typeContent);
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -66,6 +80,7 @@ class BulletinBoard {
         return $row['count'];
     }
 
+    // 게시글 생성
     function create() {
         // parentSeq이 없다면 원글
         if(is_null($this->parentSeq)) {
@@ -83,12 +98,13 @@ class BulletinBoard {
         }
         
         // 데이터 삽입
-        $sql = 'INSERT INTO '.$this->table_name;
-        $sql.= '    (id, email, password, title, content, ip_add, view_count, ';
-        $sql.= '      re_order, re_depth, re_group, created_at, updated_at) ';
-        $sql.= 'VALUES ';
-        $sql.= '    (:id, :email, :password, :title, :content, :ipAdd, 0, ';
-        $sql.= '      :reOrder, :reDepth, :reGroup, sysdate(), sysdate());';
+        $sql = '';
+        $sql.=' INSERT INTO '.$this->table_name;
+        $sql.='     (id, email, password, title, content, ip_add, view_count, ';
+        $sql.='       re_order, re_depth, re_group, created_at, updated_at) ';
+        $sql.=' VALUES ';
+        $sql.='     (:id, :email, :password, :title, :content, :ipAdd, 0, ';
+        $sql.='       :reOrder, :reDepth, :reGroup, sysdate(), sysdate());';
         
         $stmt = $this->conn->prepare($sql);
         
@@ -113,11 +129,19 @@ class BulletinBoard {
     }
 
     function detail() {
-        $sql = 'SELECT ';
-        $sql.= '    sequence, id, email, title, content, ip_add, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at ';
-        $sql.= 'FROM ';
-        $sql.=     $this->table_name;
-        $sql.=' WHERE sequence = :sequence;';
+        $sql = '';
+        $sql.=' SELECT ';
+        $sql.='     sequence,';
+        $sql.='     id,';
+        $sql.='     email,';
+        $sql.='     title,';
+        $sql.='     content,';
+        $sql.='     ip_add,';
+        $sql.='     DATE_FORMAT(created_at, "%Y-%m-%d") as created_at';
+        $sql.=' FROM ';
+        $sql.=      $this->table_name;
+        $sql.=' WHERE ';
+        $sql.='     sequence = :sequence;';
 
         $stmt = $this->conn->prepare($sql);
         $this->sequence = htmlspecialchars(strip_tags($this->sequence));
@@ -137,12 +161,13 @@ class BulletinBoard {
     }
 
     function viewCountIncrease() {
-        $sql = 'UPDATE ';
+        $sql = '';
+        $sql.=' UPDATE ';
         $sql.=      $this->table_name;
         $sql.=' SET ';
-        $sql.= '    view_count = view_count + 1';
+        $sql.='     view_count = view_count + 1';
         $sql.=' WHERE ';
-        $sql.= '    sequence = :sequence;';
+        $sql.='     sequence = :sequence;';
 
         $stmt = $this->conn->prepare($sql);
         $this->sequence = htmlspecialchars(strip_tags($this->sequence));
@@ -152,10 +177,11 @@ class BulletinBoard {
     }
 
     function delete() {
-        $sql = 'DELETE FROM ';
+        $sql = '';
+        $sql.=' DELETE FROM ';
         $sql.=      $this->table_name;
         $sql.=' WHERE ';
-        $sql.='     sequence = :sequence';
+        $sql.='     sequence = :sequence;';
 
         $stmt = $this->conn->prepare($sql);
         $this->sequence = htmlspecialchars(strip_tags($this->sequence));
@@ -166,16 +192,17 @@ class BulletinBoard {
     }
 
     function update() {
-        $sql = 'UPDATE ';
+        $sql = '';
+        $sql.=' UPDATE ';
         $sql.=      $this->table_name;
         $sql.=' SET ';
-        $sql.= '    title      = :title,';
-        $sql.= '    email      = :email,';
-        $sql.= '    content    = :content';
-        $sql.= '    updated_at = sysdate()';
+        $sql.='     title      = :title,';
+        $sql.='     email      = :email,';
+        $sql.='     content    = :content,';
+        $sql.='     updated_at = sysdate()';
         $sql.=' WHERE ';
-        $sql.= '    sequence = :sequence AND';
-        $sql.= '    password = :password;';
+        $sql.='     sequence = :sequence AND';
+        $sql.='     password = :password;';
 
         $stmt = $this->conn->prepare($sql);
         
@@ -192,7 +219,7 @@ class BulletinBoard {
         $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
 
         $stmt->execute();
-        
+
         // 변경된 row의 수 (실행이 되어도 변한 값이 없을경우 0을 리턴)
         return $stmt->rowCount();
     }

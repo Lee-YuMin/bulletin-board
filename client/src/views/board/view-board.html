@@ -293,7 +293,8 @@
         if(e.keyCode == 13)
           this._typeSubmit();
       },
-
+      
+      // Depth가 있는 글 앞에 'RE: '를 적용 
       _computeTitle: function(item) {
         let title = '';
         for(let i=0; i<item.re_depth; i++)

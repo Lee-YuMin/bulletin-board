@@ -59,7 +59,7 @@
       method="POST"
       on-response="_insertBoardResponse"
       content-type="application/json"
-      debounce-duration="300">
+      debounce-duration="1000">
     </iron-ajax>
 
     <div class="container">
@@ -212,7 +212,7 @@
       _insertBoardResponse: function(e) {
         let status = e.detail.response && e.detail.response.status;
         if(status && status.toUpperCase() === 'OK'){
-          showDialog('성공', '게시글이 등록되었습니다.', `board_detail/${this.boardSeq}`, this._reset());
+          showDialog('성공', '게시글이 등록되었습니다.', 'board', this._reset());
         } else {
           showDialog('실패', '게시글 등록을 실패하였습니다.');
         }
