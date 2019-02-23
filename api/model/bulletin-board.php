@@ -41,7 +41,7 @@ class BulletinBoard {
         $sql.=' WHERE 1=1 ';
         $sql.= $this->_checkCondition($this->type, $this->typeContent);
         $sql.= 'ORDER BY '; 
-        $sql.= '    re_group DESC, re_order ASC ';
+        $sql.= '    re_group DESC, re_order ASC, sequence DESC ';
         $sql.= 'LIMIT :startNum, :pageCount;';
 
         $stmt = $this->conn->prepare($sql);
