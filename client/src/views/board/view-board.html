@@ -58,7 +58,7 @@
       handle-as="json"
       method="GET"
       on-response="_selectBoardListResponse"
-      debounce-duration="300">
+      debounce-duration="1000">
     </iron-ajax>
 
     <div class="container">
@@ -133,6 +133,11 @@
           type: Array
         },
         
+        routeData: {
+          type: String,
+          observer: '_routeChanged'
+        },
+        
         // Dom Repeat으로 페이지 버튼 생성을 위한 배열
         pageCount: {
           type: Array,
@@ -167,13 +172,18 @@
         }  
       },
       
+      _routeChanged: function(route) {
+        if(route.page == 'board')
+          this.getBoardList();
+      },
+      
       _goToWriteBoard: function(e) {
-        window.location.hash = '#/write_board/'
+        window.location.hash = '/write_board';
       },
 
       _goToBoardDetail: function(e) {
         let sequence = e.target.seq;
-        window.location.hash = `#/board_detail/${sequence}`
+        window.location.hash = `/board_detail/${sequence}`;
       },
 
       getBoardList: function(curPage) {
@@ -186,7 +196,7 @@
           type,
           typeContent
         };
-        
+
         this.$['ajax-select-board-list'].generateRequest();
       },
 
