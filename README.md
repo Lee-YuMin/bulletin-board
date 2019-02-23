@@ -25,4 +25,4 @@ Database is MySQL 8.0, Web Server is NginX.
 * Bower
 * Gulp
 
-[logo]: https://github.com/Lee-YuMin/bulletin-board/blob/master/client/images/board.png
+[logo]: ./client/images/board.png
