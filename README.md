@@ -34,12 +34,12 @@ Database is MySQL 8.0, Web Server is NginX.
 - Form Initialization
 - Go backwards
 
-6. Other security operations
+6.Other security operations
 - Application of htmlspecialcharrs and strip_tags to prevent XSS
-Application of SQL BindValue for SQL Injection Prevention
+- Application of SQL BindValue for SQL Injection Prevention
 - Application of token for CSRF prevention
 
-![capture](https://user-images.githubusercontent.com/14229774/53291354-10ce9500-37f5-11e9-8915-55133d1aae61.PNG)
+![image_1](https://user-images.githubusercontent.com/14229774/53291354-10ce9500-37f5-11e9-8915-55133d1aae61.PNG)
 
 -----------
 ## Dev Dependencies And Environment
@@ -50,3 +50,5 @@ Application of SQL BindValue for SQL Injection Prevention
 * NPM
 * Bower
 * Gulp
+
+
