@@ -189,18 +189,16 @@
         
         board: {
           type: Object
-        },
-
-        observers: [
-          '_boardSeqChanged(routeData.boardSeq)'
-        ],
+        }
       },
       
       _routeDataChanged: function(page) {
           // Route Pattern이 '/board_detail/:boardSeq' 일 때 동작
-          if(page.boardSeq) {
-            this._getBoardDetail(page.boardSeq);
-            this.boardSeq = page.boardSeq;
+          // this.boardSeq도 routeData이므로 else if에서 boardSeq가 바뀌면 다시한번 Change로 들어옴
+          if (this.boardSeq == page.boardSeq) {
+            this._getBoardDetail(this.boardSeq);
+          } else if(page.boardSeq) {
+            this.boardSeq = page.boardSeq
           }
       },
 
