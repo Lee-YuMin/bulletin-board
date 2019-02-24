@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 class Database {
 	private $host = "localhost";
 	private $db_name = "mysite";

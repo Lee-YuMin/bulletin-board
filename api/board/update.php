@@ -7,13 +7,17 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 require_once '../db/db_connetion.php';
 require_once '../model/bulletin-board.php';
  
+$data = json_decode(file_get_contents('php://input'));
+
+if($_SESSION['token'] != $data->token) {
+    http_response_code(511);
+    return;
+}
+
 $database = new Database();
 $db = $database->getConnection();
 
 $board = new BulletinBoard($db);
-
-// POST 데이터 받기
-$data = json_decode(file_get_contents('php://input'));
 
 // NOT NULL 데이터 체크
 if( empty($data->sequence) || empty($data->password) || empty($data->title)) {

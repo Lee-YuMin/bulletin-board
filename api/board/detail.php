@@ -7,6 +7,11 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 require_once '../db/db_connetion.php';
 require_once '../model/bulletin-board.php';
  
+if($_SESSION['token'] != $_GET['token']) {
+    http_response_code(511);
+    return;
+}
+
 $database = new Database();
 $conn = $database->getConnection();
 
