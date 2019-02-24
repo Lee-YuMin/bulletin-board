@@ -180,7 +180,7 @@
       },
 
       _sessionResponse: function(response) {
-        TOKEN = response.detail.response.token;
+        window.CONST.TOKEN = response.detail.response.token;
       },
       
       _sessionError: function(response) {

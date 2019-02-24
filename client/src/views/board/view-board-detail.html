@@ -219,7 +219,7 @@
       _delete: function() {
         this.deleteBoardParams = JSON.stringify({
           sequence: this.boardSeq,
-          token: TOKEN
+          token: window.CONST.TOKEN
         });
 
         this.$['ajax-delete-board'].generateRequest();
@@ -261,7 +261,7 @@
         let password = this.$['edit-password'].value;
         let sequence = this.boardSeq;
         
-        let obj = { sequence, title, email, content, password, token: TOKEN };
+        let obj = { sequence, title, email, content, password, token: window.CONST.TOKEN };
 
         if(!this._validation(obj))
           return;
@@ -276,7 +276,7 @@
         this.board = null;
         this.detailBoardParams = {
           sequence: boardSeq,
-          token: TOKEN
+          token: window.CONST.TOKEN
         },
 
         this.$['ajax-detail-board'].generateRequest();

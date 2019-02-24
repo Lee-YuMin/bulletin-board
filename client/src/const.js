@@ -1,7 +1,6 @@
 (function() {
     window.CONST = {
-        BASE_URL: 'localhost'
+        BASE_URL: 'localhost',
+        TOKEN: ''
     };
 })();
-
-TOKEN: '';
