@@ -30,9 +30,12 @@ if(!is_null($board->sequence)) {
         'title'      => $board->title,
         'content'    => $board->content,
         'ip_add'     => $board->ip_add,
+        're_group'   => $board->re_group,
+        're_order'   => $board->re_order,
+        're_depth'   => $board->re_depth,
         'created_at' => $board->created_at
     );
-
+    
     http_response_code(200);
     echo json_encode($board_detail);
 } else {

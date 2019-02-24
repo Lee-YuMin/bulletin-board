@@ -212,7 +212,9 @@
 
       _delete: function() {
         this.deleteBoardParams = JSON.stringify({
-          sequence: this.boardSeq,
+          re_group: this.board.re_group,
+          re_order: this.board.re_order,
+          re_depth: this.board.re_depth,
           token: window.CONST.TOKEN
         });
 

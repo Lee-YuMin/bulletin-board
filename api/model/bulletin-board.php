@@ -137,6 +137,9 @@ class BulletinBoard {
         $sql.='     title,';
         $sql.='     content,';
         $sql.='     ip_add,';
+        $sql.='     re_group,';
+        $sql.='     re_order,';
+        $sql.='     re_depth,';
         $sql.='     DATE_FORMAT(created_at, "%Y-%m-%d") as created_at';
         $sql.=' FROM ';
         $sql.=      $this->table_name;
@@ -157,6 +160,9 @@ class BulletinBoard {
         $this->title = $row['title'];
         $this->content = $row['content'];
         $this->ip_add = $row['ip_add'];
+        $this->re_group = $row['re_group'];
+        $this->re_order = $row['re_order'];
+        $this->re_depth = $row['re_depth'];
         $this->created_at = $row['created_at'];
     }
 
@@ -177,16 +183,41 @@ class BulletinBoard {
     }
 
     function delete() {
+        
+        $this->re_group = htmlspecialchars(strip_tags($this->re_group));
+        $this->re_order = htmlspecialchars(strip_tags($this->re_order));
+        $this->re_depth = htmlspecialchars(strip_tags($this->re_depth));
+
         $sql = '';
-        $sql.=' DELETE FROM ';
-        $sql.=      $this->table_name;
-        $sql.=' WHERE ';
-        $sql.='     sequence = :sequence;';
+        $nextSiblingOrder = null;
+        
+        // 부모 글일 경우엔 그룹을 전체 삭제
+        if($this->re_order == 0) {
+            $sql.=' DELETE FROM ';
+            $sql.=      $this->table_name;
+            $sql.=' WHERE ';
+            $sql.='     re_group = :re_group;';
+        } else {
+            // 답글일 경우엔 다음 게시글까지 삭제, 다음 게시글이 없으면 자신의 뒤로 전부 삭제
+            $nextSiblingOrder = $this->_getNextSiblingOrder($this->re_group, $this->re_depth, $this->re_order);
+
+            if(!is_null($nextSiblingOrder))
+                $condition = 're_order >= :my_order AND re_order < :sibling_order';
+            else
+                $condition = 're_order >= :my_order';
+            
+            $sql.=' DELETE FROM ';
+            $sql.=      $this->table_name;
+            $sql.=' WHERE ';
+            $sql.='     re_group = :re_group AND ';
+            $sql.=      $condition;
+        }
 
         $stmt = $this->conn->prepare($sql);
-        $this->sequence = htmlspecialchars(strip_tags($this->sequence));
 
-        $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
+        $stmt->bindValue(':re_group', $this->re_group, PDO::PARAM_INT);
+        if($this->re_order != 0)        $stmt->bindValue(':my_order', $this->re_order, PDO::PARAM_INT);
+        if(!is_null($nextSiblingOrder)) $stmt->bindValue(':sibling_order', $nextSiblingOrder, PDO::PARAM_INT);
         
         return $stmt->execute() ? true : false;
     }
@@ -289,5 +320,28 @@ class BulletinBoard {
         $stmt->bindValue(':re_order', $parent['re_order'], PDO::PARAM_INT);
 
         $stmt->execute();
+    }
+
+    // 같은 깊이의 다음 게시글의 순번을 구함
+    private function _getNextSiblingOrder($re_group, $re_depth, $re_order) {
+        $sql = '';
+        $sql.=' SELECT ';
+        $sql.='     min(re_order) as re_order ';
+        $sql.=' FROM ';
+        $sql.=      $this->table_name;
+        $sql.=' WHERE ';
+        $sql.='     re_group = :re_group AND';
+        $sql.='     re_depth = :re_depth AND';
+        $sql.='     re_order > :re_order;';
+        
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bindValue(':re_group', $re_group, PDO::PARAM_INT);
+        $stmt->bindValue(':re_order', $re_order, PDO::PARAM_INT);
+        $stmt->bindValue(':re_depth', $re_depth, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC)['re_order'];
     }
 }

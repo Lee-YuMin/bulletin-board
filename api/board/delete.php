@@ -19,7 +19,9 @@ $conn = $database->getConnection();
 
 $board = new BulletinBoard($conn);
 
-$board->sequence = $data->sequence;
+$board->re_group = $data->re_group;
+$board->re_order = $data->re_order;
+$board->re_depth = $data->re_depth;
 
 $status = array();
 
