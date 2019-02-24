@@ -187,6 +187,11 @@
           type: Boolean,
           observer: '_routeDataChanged'
         },
+
+        route: {
+          type: Boolean,
+          observer: '_routeChanged'
+        },
         
         board: {
           type: Object
@@ -202,6 +207,12 @@
           this.boardSeq = page.boardSeq ? page.boardSeq : null;
       },
       
+      // 조회수 증가를 위한 boardSqe 제거
+      _routeChanged: function(route) {
+        if(route.path.replace('/', '') != 'board_detail')
+          this.boardSeq = null;
+      },
+
       // 보드 시퀀스가 바뀌면 새롭게 데이터 요청
       _boardSeqChanged: function(boardSeq) {
         if(boardSeq)
