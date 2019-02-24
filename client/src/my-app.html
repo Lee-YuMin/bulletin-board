@@ -47,6 +47,18 @@
         pattern="/:page"
         data="{{routeData}}"></app-route>
 
+    <!-- 세션 요청 -->
+    <iron-ajax
+      id="ajax-connect-session"
+      url="/security/session.php"
+      handle-as="json"
+      method="GET"
+      on-response="_sessionResponse"
+      on-error="_sessionError"
+      content-type="application/json"
+      debounce-duration="1000">
+    </iron-ajax>
+
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
       <app-drawer id="drawer">
@@ -127,6 +139,10 @@
         document.addEventListener('open-dialog', this._openDialog.bind(this));
       },
 
+      attached: function() {
+        this.$['ajax-connect-session'].generateRequest();
+      },
+
       // 라우팅이 바뀔때 때마다 들어오는 함수
       _routePageChanged: function(page) {
         if(!page)
@@ -162,7 +178,15 @@
       _openDialog: function(msg) {
         this.$.dialog.open(msg.detail);
       },
+
+      _sessionResponse: function(response) {
+        TOKEN = response.detail.response.token;
+      },
       
+      _sessionError: function(response) {
+        showDialog('경고', '세션 연결에 실패하였습니다.');
+      },
+
       // 페이지별 파일명을 Map으로 저장
       _createUrlMap: function(page) {
         this._pageParsing = new Map([ 

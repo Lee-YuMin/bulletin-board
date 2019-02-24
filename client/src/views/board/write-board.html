@@ -132,7 +132,7 @@
           }).catch((err) => {
             return null;
           }).then((ip_add) => {
-            this.insertBoardParams = JSON.stringify({ id, password, email, title, content, ip_add });
+            this.insertBoardParams = JSON.stringify({ id, password, email, title, content, ip_add, token: TOKEN });
             this.$['ajax-insert-board'].generateRequest();
           })
       },
