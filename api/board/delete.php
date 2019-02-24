@@ -1,8 +1,7 @@
 <?php
 header("Content-Type:application/json");
-header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
  
 require_once '../db/db_connetion.php';
@@ -13,7 +12,9 @@ $conn = $database->getConnection();
 
 $board = new BulletinBoard($conn);
 
-$board->sequence = $_GET['sequence'];
+$data = json_decode(file_get_contents('php://input'));
+
+$board->sequence = $data->sequence;
 
 $status = array();
 

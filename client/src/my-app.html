@@ -109,7 +109,7 @@
         page: {
           type: String,
           reflectToAttribute: true,
-          observer: '_pageChanged',
+          observer: '_pageChanged'
         },
         
         title: {
@@ -130,7 +130,7 @@
       // 라우팅이 바뀔때 때마다 들어오는 함수
       _routePageChanged: function(page) {
         if(!page)
-          return;
+          page = 'main';
           
         this.page = page.split('/')[0] || 'main';
 

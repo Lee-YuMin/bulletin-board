@@ -86,9 +86,9 @@
     <iron-ajax
       id="ajax-delete-board"
       url="/board/delete.php"
-      params="[[deleteBoardParams]]"
+      body="[[deleteBoardParams]]"
       handle-as="json"
-      method="GET"
+      method="POST"
       on-response="_boardDeleteResponse"
       on-error="_boardDeleteError"
       content-type="application/json"
@@ -217,9 +217,9 @@
       },
 
       _delete: function() {
-        this.deleteBoardParams = {
+        this.deleteBoardParams = JSON.stringify({
           sequence: this.boardSeq
-        };
+        });
 
         this.$['ajax-delete-board'].generateRequest();
       },
