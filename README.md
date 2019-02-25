@@ -43,6 +43,12 @@ Database is MySQL 8.0, Web Server is NginX.
 ![image_1](https://user-images.githubusercontent.com/14229774/53291354-10ce9500-37f5-11e9-8915-55133d1aae61.PNG)
 
 -----------
+
+## ERD
+![image](https://user-images.githubusercontent.com/14229774/53344541-3b842f00-3956-11e9-997d-bc582cfd171d.png)
+
+-----------
+
 ## Dev Dependencies And Environment
 * Polymer 1.0
 * PHP 7.2
