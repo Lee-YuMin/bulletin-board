@@ -146,12 +146,12 @@
         
         let message = '';
         
-        if(!id || !id.match(pattern)){
+        if(!id || !id.match(pattern) || id.length > 50){
           showDialog('실패', '이름을 올바르게 입력해주세요.');
-        } else if(!password || !password.match(pattern)) {
+        } else if(!password || !password.match(pattern) || password.length > 50) {
           showDialog('실패', '비밀번호를 올바르게 입력해주세요.');
-        } else if(!title){
-          showDialog('실패', '제목을 입력해주세요.');
+        } else if(!title || title.length > 100){
+          showDialog('실패', '제목을 올바르게 입력해주세요.');
         }
 
         return false;

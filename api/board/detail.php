@@ -1,11 +1,8 @@
 <?php
-header("Content-Type:application/json");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
- 
 require_once '../db/db_connetion.php';
 require_once '../model/bulletin-board.php';
+require_once '../management/header_info.php';
+header("Access-Control-Allow-Methods: GET");
  
 if($_SESSION['token'] != $_GET['token']) {
     http_response_code(511);

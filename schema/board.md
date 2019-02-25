@@ -10,7 +10,7 @@ ip_add      VARCHAR(39)
 view_count  INT(10)         UNSIGNED NOT NULL DEFAULT '0'
 re_order    INT(10)         UNSIGNED NOT NULL
 re_depth    INT(10)         UNSIGNED NOT NULL DEFAULT '0'
-re_group      INT(10)         UNSIGNED NOT NULL DEFAULT '0'
+re_group    INT(10)         UNSIGNED NOT NULL DEFAULT '0'
 created_at  date            NOT NULL
 updated_at  date            NOT NULL
 PRIMARY KEY (sequence)
