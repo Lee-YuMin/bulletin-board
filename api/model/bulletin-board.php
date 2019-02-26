@@ -54,13 +54,22 @@ class BulletinBoard {
         $sql.='    sequence DESC';
         $sql.=' LIMIT :startNum, :pageCount;';
 
-        $stmt = $this->conn->prepare($sql);
+        try {
+            $stmt = $this->conn->prepare($sql);
 
-        $stmt->bindValue(':startNum', $page, PDO::PARAM_INT);
-        $stmt->bindValue(':pageCount', $SELECT_LIMIT, PDO::PARAM_INT);
-        $stmt->execute();
+            $stmt->bindValue(':startNum', $page, PDO::PARAM_INT);
+            $stmt->bindValue(':pageCount', $SELECT_LIMIT, PDO::PARAM_INT);
+            $stmt->execute();
 
-        return $stmt;
+            if(!$stmt->execute()) throw new Exception('DB Error');
+            
+            return $stmt;
+            
+        } catch(Exception $e) {
+            http_response_code(500);
+            echo json_encode(array('message'=> $e->getMessage()));
+            die();
+        }
     }
 
     // 페이징을 위한 총 데이터 개수
@@ -106,26 +115,40 @@ class BulletinBoard {
         $sql.='     (:id, :email, :password, :title, :content, :ip_add, 0, ';
         $sql.='       :re_order, :re_depth, :reGroup, sysdate(), sysdate());';
         
-        $stmt = $this->conn->prepare($sql);
+        try {
+            $stmt = $this->conn->prepare($sql);
         
-        // XSS 제거
-        $this->id = htmlspecialchars(strip_tags($this->id));
-        $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->password = htmlspecialchars(strip_tags($this->password));
-        $this->title = htmlspecialchars(strip_tags($this->title));
-        $this->content = htmlspecialchars(strip_tags($this->content));
+            // XSS 제거
+            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->email = htmlspecialchars(strip_tags($this->email));
+            $this->password = htmlspecialchars(strip_tags($this->password));
+            $this->title = htmlspecialchars(strip_tags($this->title));
+            $this->content = htmlspecialchars(strip_tags($this->content));
+    
+            $stmt->bindValue(':id',       $this->id, PDO::PARAM_STR);
+            $stmt->bindValue(':email',    $this->email, PDO::PARAM_STR);
+            $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
+            $stmt->bindValue(':title',    $this->title, PDO::PARAM_STR);
+            $stmt->bindValue(':content',  $this->content, PDO::PARAM_STR);
+            $stmt->bindValue(':ip_add',   $this->ip_add, PDO::PARAM_STR);
+            $stmt->bindValue(':reGroup',  $this->re_group, PDO::PARAM_INT);
+            $stmt->bindValue(':re_order', $this->re_order, PDO::PARAM_INT);
+            $stmt->bindValue(':re_depth', $this->re_depth, PDO::PARAM_INT);
+            
+            $result =  $stmt->execute();
 
-        $stmt->bindValue(':id',       $this->id, PDO::PARAM_STR);
-        $stmt->bindValue(':email',    $this->email, PDO::PARAM_STR);
-        $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
-        $stmt->bindValue(':title',    $this->title, PDO::PARAM_STR);
-        $stmt->bindValue(':content',  $this->content, PDO::PARAM_STR);
-        $stmt->bindValue(':ip_add',   $this->ip_add, PDO::PARAM_STR);
-        $stmt->bindValue(':reGroup',  $this->re_group, PDO::PARAM_INT);
-        $stmt->bindValue(':re_order', $this->re_order, PDO::PARAM_INT);
-        $stmt->bindValue(':re_depth', $this->re_depth, PDO::PARAM_INT);
-        
-        return $stmt->execute() ? true : false;
+            if(!$result)
+                throw new Exception('DB Error');
+            else if($stmt->rowCount() == 0)
+                throw new Exception('Failed Create.');
+
+            return $result;
+
+        } catch(Exception $e) {
+            http_response_code(404);
+            echo json_encode(array('message'=> $e->getMessage()));
+            die();
+        }
     }
 
     function detail() {
@@ -146,24 +169,36 @@ class BulletinBoard {
         $sql.=' WHERE ';
         $sql.='     sequence = :sequence;';
 
-        $stmt = $this->conn->prepare($sql);
-        $this->sequence = htmlspecialchars(strip_tags($this->sequence));
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $this->sequence = htmlspecialchars(strip_tags($this->sequence));
+    
+            $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
+            $result = $stmt->execute();  
 
-        $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        $this->sequence = $row['sequence'];
-        $this->id = $row['id'];
-        $this->email = $row['email'];
-        $this->title = $row['title'];
-        $this->content = $row['content'];
-        $this->ip_add = $row['ip_add'];
-        $this->re_group = $row['re_group'];
-        $this->re_order = $row['re_order'];
-        $this->re_depth = $row['re_depth'];
-        $this->created_at = $row['created_at'];
+            if(!$result) 
+                throw new Exception('DB Error');
+            else if($stmt->rowCount() == 0)
+                throw new Exception('This page does not exist.');
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            $this->sequence = $row['sequence'];
+            $this->id = $row['id'];
+            $this->email = $row['email'];
+            $this->title = $row['title'];
+            $this->content = $row['content'];
+            $this->ip_add = $row['ip_add'];
+            $this->re_group = $row['re_group'];
+            $this->re_order = $row['re_order'];
+            $this->re_depth = $row['re_depth'];
+            $this->created_at = $row['created_at'];
+
+        } catch(Exception $e) {
+            http_response_code(404);
+            echo json_encode(array('message'=> $e->getMessage()));
+            die();
+        }
     }
 
     function viewCountIncrease() {
@@ -213,46 +248,72 @@ class BulletinBoard {
             $sql.=      $condition;
         }
 
-        $stmt = $this->conn->prepare($sql);
+        try {
+            $stmt = $this->conn->prepare($sql);
 
-        $stmt->bindValue(':re_group', $this->re_group, PDO::PARAM_INT);
-        if($this->re_order != 0)        $stmt->bindValue(':my_order', $this->re_order, PDO::PARAM_INT);
-        if(!is_null($nextSiblingOrder)) $stmt->bindValue(':sibling_order', $nextSiblingOrder, PDO::PARAM_INT);
-        
-        return $stmt->execute() ? true : false;
+            $stmt->bindValue(':re_group', $this->re_group, PDO::PARAM_INT);
+            if($this->re_order != 0)        $stmt->bindValue(':my_order', $this->re_order, PDO::PARAM_INT);
+            if(!is_null($nextSiblingOrder)) $stmt->bindValue(':sibling_order', $nextSiblingOrder, PDO::PARAM_INT);
+            
+            $result = $stmt->execute();
+    
+            if(!$result)
+                throw new Exception('DB Error');
+            if($stmt->rowCount() == 0)
+                throw new Exception('Delete failed.');
+    
+            return $result;
+
+        } catch(Exception $e) {
+            http_response_code(500);
+            echo json_encode(array('message'=> $e->getMessage()));
+            die();
+        }
     }
 
     function update() {
-        $sql = '';
-        $sql.=' UPDATE ';
-        $sql.=      $this->table_name;
-        $sql.=' SET ';
-        $sql.='     title      = :title,';
-        $sql.='     email      = :email,';
-        $sql.='     content    = :content,';
-        $sql.='     updated_at = sysdate()';
-        $sql.=' WHERE ';
-        $sql.='     sequence = :sequence AND';
-        $sql.='     password = :password;';
 
-        $stmt = $this->conn->prepare($sql);
-        
-        $this->sequence = htmlspecialchars(strip_tags($this->sequence));
-        $this->password = htmlspecialchars(strip_tags($this->password));
-        $this->title = htmlspecialchars(strip_tags($this->title));
-        $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->content = htmlspecialchars(strip_tags($this->content));
-        
-        $stmt->bindValue(':title', $this->title, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
-        $stmt->bindValue(':content', $this->content, PDO::PARAM_STR);
-        $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
-        $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
+            $sql = '';
+            $sql.=' UPDATE ';
+            $sql.=      $this->table_name;
+            $sql.=' SET ';
+            $sql.='     title      = :title,';
+            $sql.='     email      = :email,';
+            $sql.='     content    = :content,';
+            $sql.='     updated_at = sysdate()';
+            $sql.=' WHERE ';
+            $sql.='     sequence = :sequence AND';
+            $sql.='     password = :password;';
 
-        $stmt->execute();
+        try{
+            $stmt = $this->conn->prepare($sql);
+            
+            $this->sequence = htmlspecialchars(strip_tags($this->sequence));
+            $this->password = htmlspecialchars(strip_tags($this->password));
+            $this->title = htmlspecialchars(strip_tags($this->title));
+            $this->email = htmlspecialchars(strip_tags($this->email));
+            $this->content = htmlspecialchars(strip_tags($this->content));
+            
+            $stmt->bindValue(':title', $this->title, PDO::PARAM_STR);
+            $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
+            $stmt->bindValue(':content', $this->content, PDO::PARAM_STR);
+            $stmt->bindValue(':sequence', $this->sequence, PDO::PARAM_INT);
+            $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
 
-        // 변경된 row의 수 (실행이 되어도 변한 값이 없을경우 0을 리턴)
-        return $stmt->rowCount();
+            $result = $stmt->execute();
+
+            if(!$result) 
+                throw new Exception('DB Error');
+            else if($stmt->rowCount() == 0)
+                throw new Exception('Please confirm password.');
+
+            return $result;
+
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(array('message'=> $e->getMessage()));
+            die();
+        }
     }
 
     // 검색 조건이 있을시 조건 쿼리 String을, 없으면 ''을 리턴

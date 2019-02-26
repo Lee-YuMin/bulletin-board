@@ -232,8 +232,8 @@
         }
       },
       
-      _insertBoardError: function() {
-        showDialog('실패', '게시글 등록을 실패하였습니다.');
+      _insertBoardError: function(e) {
+        showError(e);
       }
     });
   </script>

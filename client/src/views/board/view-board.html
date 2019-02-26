@@ -64,6 +64,7 @@
       handle-as="json"
       method="GET"
       on-response="_selectBoardListResponse"
+      on-error="_selectBoardError"
       debounce-duration="1000">
     </iron-ajax>
 
@@ -212,6 +213,10 @@
         this.boardList = e.detail.response.list;
         this.boardCount = e.detail.response.count;
         this._setHighlightClickedText(this.curPage);
+      },
+
+      _selectBoardError: function(e) {
+        showError(e);
       },
       
       // 검색 조건

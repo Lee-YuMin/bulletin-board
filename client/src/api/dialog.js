@@ -12,3 +12,10 @@ function showDialog(title, message, url, callback) {
 
     document.dispatchEvent(new CustomEvent('open-dialog', {detail : msg}));
 };
+
+function showError(e, url) {
+    if(!e.detail.request.xhr.response.message)
+        return;
+    
+    showDialog('Error', e.detail.request.xhr.response.message, url);
+}

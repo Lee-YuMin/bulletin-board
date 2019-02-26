@@ -35,8 +35,5 @@ if(!is_null($board->sequence)) {
     
     http_response_code(200);
     echo json_encode($board_detail);
-} else {
-    http_response_code(404);
-    echo json_encode(array("status"=>"fail"));
 }
 ?>

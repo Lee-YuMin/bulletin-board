@@ -30,13 +30,8 @@ $board->email    = $data->email;
 $board->content  = $data->content;
 $board->password = $data->password;
 
-if($board->update()){
-    // UPDATE 성공
+if($board->update()) {
     http_response_code(200);
     echo json_encode(array('status' => 'ok'));
-} else { 
-    // UPDATE 실패
-    http_response_code(503);
-    echo json_encode(array('status' => 'fail'));
 }
 ?>

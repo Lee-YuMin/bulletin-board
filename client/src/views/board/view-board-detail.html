@@ -279,7 +279,7 @@
       },
 
       // 게시글 상세 조회 에러시 리스트 화면으로 이동
-      _boardDetailError: function(e){
+      _boardDetailError: function(e) {
         showDialog('에러', '존재하지 않는 페이지입니다.', 'board');
         this.boardSeq = null;
       },
@@ -303,7 +303,7 @@
 
       // 게시글 삭제 요청 에러
       _boardDeleteError: function(e) {
-          showDialog('실패', '게시글 삭제에 실패하였습니다.');
+        showError(e);
       },
       
       // 게시글 수정 요청 응답
@@ -318,8 +318,8 @@
       },
       
       // 게시글 수정 요청 에러
-      _boardUpdateError: function() {
-        showDialog('실패', '비밀번호를 확인해 주세요'); 
+      _boardUpdateError: function(e) {
+        showError(e);
       },
 
       _boardUpdateSuccess: function() {

@@ -24,11 +24,6 @@ $status = array();
 
 if($board->delete()) {
     http_response_code(200);
-    $status = array('status'=> 'ok');
-} else {
-    http_response_code(503);
-    $status = array('status'=> 'fail');
+    echo json_encode(array('status'=> 'ok'));
 }
-
-echo json_encode($status);
 ?>

@@ -33,12 +33,7 @@ $board->ip_add    = $data->ip_add;
 $board->parentSeq = property_exists($data, 'parentSeq') ? $data->parentSeq : null;  // parentSeq이 있다면 답변 글, 없다면 원글
 
 if($board->create()){
-    // INSERT 성공
     http_response_code(201);
     echo json_encode(array('status' => 'ok'));
-} else { 
-    // INSERT 실패
-    http_response_code(503);
-    echo json_encode(array('status' => 'fail'));
 }
 ?>
