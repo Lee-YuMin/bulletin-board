@@ -180,8 +180,10 @@
       },
       
       _routeChanged: function(route) {
-        if(route.page == 'board')
+        if(route.page == 'board' && this.page != 'board') {
           this.getBoardList();
+        }
+        this.page = route.page
       },
       
       _goToWriteBoard: function(e) {
